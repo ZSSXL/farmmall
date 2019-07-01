@@ -122,6 +122,7 @@
                 alert(result.msg);
             }else if(result.status == 1){
                 alert(result.msg);
+                window.location.reload();
             }
         }
 </script>

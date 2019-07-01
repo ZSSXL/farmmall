@@ -81,9 +81,9 @@
                 <c:if test="${sessionScope.currentUser.role == 2}">
                         <li><div style="margin-left: 100px; "><a href="${APP_PATH}/jsp/free_opening.jsp">免费开店</a></div></li>
                 </c:if>
-                <li><div style="margin-left: 50px;"><a href="${APP_PATH}/jsp/selledbaby.jsp">已卖出的宝贝</a></div>
+                <li><div style="margin-left: 50px;"><a href="${APP_PATH}/jsp/selledbaby.jsp">订单管理</a></div>
                 </li>
-                <li><div style="margin-left: 50px;"><a href="${APP_PATH}/jsp/sellingbaby.jsp">出售中的宝贝</a></div></li>
+                <li><div style="margin-left: 50px;"><a href="${APP_PATH}/jsp/sellingbaby.jsp">发货</a></div></li>
                 <li><div style="margin-left: 50px;"><a href="${APP_PATH}/jsp/baby_on.jsp">发布宝贝</a></div></li>
                 <li><div style="margin-left: 50px;background-color: rgba(0,0,0,0.1);"><a href="${APP_PATH}/jsp/baby_off.jsp">下架宝贝</a></div></li>
         </ul>
@@ -98,7 +98,7 @@
                 </c:if>
                 <div class="row" style="padding-left: 10px;padding-top: 20px;">
                         <div><span><img src="${APP_PATH}/static/images/free_opening/img2.png" alt="">&nbsp;</span><a href="#"><strong>交易管理</strong></a></div>
-                        <div style="padding-left: 28px;padding-top: 10px;"><a href="${APP_PATH}/jsp/selledbaby.jsp">已卖出的宝贝</a></div>
+                        <div style="padding-left: 28px;padding-top: 10px;"><a href="${APP_PATH}/jsp/selledbaby.jsp">订单管理</a></div>
                 </div>
                 <div class="row" style="padding-left: 10px;padding-top: 20px;">
                         <div><span><img src="${APP_PATH}/static/images/free_opening/img3.png" alt="">&nbsp;</span><a href="#"><strong>物流管理</strong></a></div>

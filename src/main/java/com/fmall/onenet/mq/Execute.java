@@ -53,34 +53,34 @@ public class Execute extends Thread {
                     }
                     int o_label = Integer.parseInt(label);
                     if (staple_food.equals("01")) {
-                        o_staple_food = "饲料A";
+                        o_staple_food = "青饲料";
                     } else if (staple_food.equals("02")) {
-                        o_staple_food = "饲料B";
+                        o_staple_food = "粗饲料";
                     } else if (staple_food.equals("03")) {
-                        o_staple_food = "饲料C";
+                        o_staple_food = "蛋白质饲料";
                     } else {
-                        o_staple_food = "饲料D";
+                        o_staple_food = "青贮饲料";
                     }
                     double o_weight = Double.parseDouble(weight);
                     int o_age = Integer.parseInt(age);
 
                     if (vaccine.equals("01")) {
-                        o_vaccine = "疫苗A";
+                        o_vaccine = "口蹄疫";
                     } else if (vaccine.equals("02")) {
-                        o_vaccine = "疫苗B";
+                        o_vaccine = "伪狂犬";
                     } else if (vaccine.equals("03")) {
-                        o_vaccine = "疫苗C";
+                        o_vaccine = "乙脑";
                     } else {
-                        o_vaccine = "疫苗D";
+                        o_vaccine = "猪瘟";
                     }
                     if (medical_record.equals("01")) {
-                        o_medical_record = "病历A";
+                        o_medical_record = "猪丹毒";
                     } else if (medical_record.equals("02")) {
-                        o_medical_record = "病历B";
+                        o_medical_record = "猪肺疫";
                     } else if (medical_record.equals("03")) {
-                        o_medical_record = "病历C";
+                        o_medical_record = "猪副伤寒";
                     } else {
-                        o_medical_record = "病历D";
+                        o_medical_record = "猪蛔虫病";
                     }
 
                     if (health.equals("01")) {

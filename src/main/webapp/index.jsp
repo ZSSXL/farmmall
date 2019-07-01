@@ -147,12 +147,15 @@
                 <div class="row" id="rowOne">
                         <hr size="1px">
                 </div>
+                <hr size="1px">
                 <div class="row" id="rowTwo">
                         <hr size="1px">
                 </div>
+                <hr size="1px">
                 <div class="row" id="rowThree">
                         <hr size="1px">
                 </div>
+                <hr size="1px">
                 <div class="row" id="rowFour">
                         <hr size="1px">
                 </div>
@@ -208,8 +211,9 @@
 <script type="text/javascript">
     var type = 1; // 默认查询所有商品
     var pn = 1; // 默认第一页
-    var caegoryId = "0"; // 设置一个空的分类id
+    var categoryId = "0"; // 设置一个空的分类id
     var totalRecord,currentPage;	// 保存分页总记录数
+
     $(function () {
         var i = 0;
         var timer = null;
@@ -290,7 +294,7 @@
 
     // 打开页面加载商品数据
     $(function () {
-        showProductBySelecttive(type, caegoryId, pn);
+        showProductBySelective(type, categoryId, pn);
         showCategory("#categoryArea");
     });
 
@@ -300,7 +304,8 @@
      * @param categoryId  type选择了2，那catetoryId就一定要输入值
      * @param pn 输入页数，默认第一页
      */
-    function showProductBySelecttive(type, categoryId, pn) {
+    function showProductBySelective(type, categoryId, pn) {
+        //console.log("type:"+type+"categoryId:"+categoryId+"pn:"+pn);
         $.ajax({
             url: "${APP_PATH}/product/show_product.do",
             data: "type=" + type + "&pn=" + pn + "&categoryId=" + categoryId,
@@ -328,7 +333,7 @@
         var productItems = result.data.list;
         var count = 1;
         $.each(productItems,function (index,productItem) {
-            var productName = $("<h4 style='text-align: center'></h4>").append(productItem.name);
+            var productName = $("<h4 style='text-align: center'></h4>").append($("<strong></strong>").append(productItem.name));
             var productImage = $("<img alt='#' class='img-thumbnail'></img>").attr("src",productItem.mainImage);
             var productDetail = $("<h4></h4>").append(productItem.detail);
             var productPrice = $("<span class='price'></span>").append($("<strong></strong>").append("￥"+productItem.price+"元/kg"));
@@ -352,7 +357,6 @@
             }
             count++;
         });
-        //window.location.reload();
     }
 
     function showCategory(ele) {
@@ -360,7 +364,7 @@
             url: "${APP_PATH}/category/get_all_category.do",
             type: "get",
             success: function (result) {
-                //console.log(result);
+                // console.log(result);
                 var categorys = result.data;
                 $.each(categorys,function (index,category) {
                     var categoryName = $("<a href='#none' class='aclick'></a>").append(category.name);
@@ -381,7 +385,7 @@
         categoryId = $(this).attr("category_id");
         pn = 1;
         type = 2;
-        showProductBySelecttive(type, categoryId, pn);
+        showProductBySelective(type, categoryId, pn);
     });
 
     $(document).on("click",".buyBtn",function () {
@@ -430,16 +434,18 @@
 
         // 判断时候还有上一页，没有则disable
         if(result.data.hasPreviousPage == false){
+
             firstPageLi.addClass("disable");
             prePageLi.addClass("disable");
+
         }else{
             // 跳转第一页点击事件
             firstPageLi.click(function(){
-                showProductBySelecttive(type, categoryId, 1);
+                showProductBySelective(type, categoryId, 1);
             });
             // 跳转上一页点击事件
             prePageLi.click(function(){
-                showProductBySelecttive(type, categoryId, result.data.pageNum - 1);
+                showProductBySelective(type, categoryId, result.data.pageNum - 1);
             });
         }''
 
@@ -456,11 +462,12 @@
         }else{
             // 跳转下一页点击事件
             nextPageLi.click(function(){
-                showProductBySelecttive(type, categoryId, result.data.pageNum + 1);
+                showProductBySelective(type, categoryId, result.data.pageNum + 1);
             });
             // 跳转最后一页点击事件
             LastPageLi.click(function(){
-                showProductBySelecttive(type, categoryId, result.data.pages);
+                alert("点击最后一页："+result.data.pages);
+                showProductBySelective(type, categoryId, result.data.pages);
             });
         }
 
@@ -473,7 +480,7 @@
                 numLi.addClass("active");
             }
             numLi.click(function(){
-                showProductBySelecttive(type, categoryId, item);
+                showProductBySelective(type, categoryId, item);
             })
             ul.append(numLi);
         })

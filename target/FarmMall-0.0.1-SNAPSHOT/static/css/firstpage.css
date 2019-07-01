@@ -1,18 +1,16 @@
 @charset "utf-8";
 /* CSS Document */
 * {
-    margin: 0;
-    padding:0;
+	margin: 0;
+	padding:0;
 }
 .bigbox{
 	margin-left: 10px auto;
-	width: 1200px;	
+	width: 1200px;
 }
 .aside{
 	height: 500px;
-	/*background-color: rgba(52,52,52,0.9);*/
-	background-color: #5e5e5e;
-	
+	background-color: #A0ECFF;
 }
 
 .title{
@@ -33,7 +31,7 @@
 
 
 .aside a{
-	color: aliceblue;
+	color: #5C6898;
 }
 .clasy{
 	color: white;
@@ -48,11 +46,11 @@
 }
 .clasi div a{
 	display: block;
-	text-decoration: none;	
+	text-decoration: none;
 }
 .clasi div a:hover{
 	/*background-color: #458b00;*/
-	background-color: #68B2A0;
+	background-color: #79CEED;
 	text-decoration: none;
 	color: white;
 }
@@ -60,76 +58,76 @@
 	height: 500px;
 }
 ul,li{
-list-style: none;
+	list-style: none;
 }
 
 ul{
 	list-style: none;
 }
 .banner{
-    width: 900px;
-    height: 500px;
-    border: 2px solid #ccc;
-    position: relative;
-    overflow: hidden;
+	width: 900px;
+	height: 500px;
+	border: 2px solid #ccc;
+	position: relative;
+	overflow: hidden;
 }
 .img{
-    width:900px;
-    height: 500px;
-    position: absolute;
-    top: 0;
-    left: 0;
+	width:900px;
+	height: 500px;
+	position: absolute;
+	top: 0;
+	left: 0;
 }
 .img li{
-    float: left;
+	float: left;
 }
 .num{
-    position: absolute;
-    bottom: 10px;
-    width: 100%;
-    text-align: center;
-    font-size: 0;
+	position: absolute;
+	bottom: 10px;
+	width: 100%;
+	text-align: center;
+	font-size: 0;
 }
 .num li{
-    width: 10px;
-    height: 10px;
-    background:rgba(0,0,0,0.5);
-    border-radius: 100%;
-    display: inline-block;
-    margin: 0 5px;
-    cursor: pointer;
+	width: 10px;
+	height: 10px;
+	background:rgba(0,0,0,0.5);
+	border-radius: 100%;
+	display: inline-block;
+	margin: 0 5px;
+	cursor: pointer;
 }
 .btn1{
-    display: none;
+	display: none;
 }
 .btn1 span{
-    display: block;
-    width: 50px;
-    height: 100px;
-    background: rgba(0,0,0,0.6);
-    color: #fff;
-    font-size: 40px;
-    line-height: 100px;
-    text-align: center;
-    cursor:pointer;
+	display: block;
+	width: 50px;
+	height: 100px;
+	background: rgba(0,0,0,0.6);
+	color: #fff;
+	font-size: 40px;
+	line-height: 100px;
+	text-align: center;
+	cursor:pointer;
 }
 .btn1 .prev{
-    position: absolute;
-    left: 0;
-    top: 50%;
-    margin-top: -50px;
+	position: absolute;
+	left: 0;
+	top: 50%;
+	margin-top: -50px;
 }
 .btn1 .next{
-    position: absolute;
-    right: 0;
-    top: 50%;
-    margin-top: -50px;
+	position: absolute;
+	right: 0;
+	top: 50%;
+	margin-top: -50px;
 }
 .num .active{
-    background-color: #fff;
+	background-color: #fff;
 }
 .hide{
-    display: none;
+	display: none;
 }
 .middlebox{
 	margin: 0 auto;
@@ -156,7 +154,7 @@ ul{
 }
 figure figcaption a{
 	text-decoration: none;
-	
+
 }
 figure figcaption a:hover{
 	text-decoration: none;

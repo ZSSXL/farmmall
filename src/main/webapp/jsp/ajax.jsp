@@ -1,6 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html style="height: 100%">
+        <%
+                pageContext.setAttribute("APP_PATH", request.getContextPath());
+        %>
    <head>
        <meta charset="utf-8">
    </head>
@@ -37,9 +40,9 @@ myChart.setOption({
     }]
 });
 $.ajax({
-		url:"${APP_PATH}/echar.do/echar.do?boxId=531651109",
-		async:false,
-		cache:false,
+		url:"${APP_PATH}/echar.do",
+        type:"get",
+        data:"boxId="+531651109,
 		success:function(data){
 			myChart.setOption({
 				xAxis:{data:data.time},

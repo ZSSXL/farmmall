@@ -5,6 +5,7 @@ import com.fmall.common.ResponseCode;
 import com.fmall.common.ServerResponse;
 import com.fmall.pojo.User;
 import com.fmall.service.IUserService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,6 +46,13 @@ public class UserController {
     @RequestMapping(value = "register.do",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> register(User user){
+        if(StringUtils.isBlank(user.getUsername())){
+            return ServerResponse.createByErrorMessage("用户名不能为空");
+        }else if(StringUtils.isBlank(user.getPassword())){
+            return ServerResponse.createByErrorMessage("密码不能为空");
+        }else if(StringUtils.isBlank(user.getPhone())){
+            return ServerResponse.createByErrorMessage("电话不能为空");
+        }
         return iUserService.register(user);
     }
 

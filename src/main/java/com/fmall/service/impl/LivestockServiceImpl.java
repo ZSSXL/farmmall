@@ -30,6 +30,7 @@ public class LivestockServiceImpl implements ILivestockService {
         if(livestock == null){
             return ServerResponse.createByErrorMessage("查询出错");
         }
+        livestock.setLabel(livestock.getLabel() / 100);
         return ServerResponse.createBySuccess("查询成功",livestock);
     }
 
