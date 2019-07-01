@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fmall.dao.OrderMapper">
+  <resultMap id="BaseResultMap" type="com.fmall.pojo.Order">
+    <constructor>
+      <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="order_no" javaType="java.lang.Long" jdbcType="BIGINT" />
+      <arg column="user_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="shipping_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="payment" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
+      <arg column="box_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="payment_type" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="postage" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="status" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="payment_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="send_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="end_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="close_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="create_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="update_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+    </constructor>
+  </resultMap>
+  <resultMap id="BaseOrderAndOrderItem" type="com.fmall.vo.OrderItemVo">
+    <constructor>
+      <arg column="order_no" javaType="java.lang.Long" jdbcType="BIGINT" />
+      <arg column="user_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="shipping_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="product_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="product_name" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="product_image" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="current_unit_price" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
+      <arg column="quantity" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="total_price" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
+      <arg column="payment_type" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="status" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, order_no, user_id, shipping_id, payment, box_id, payment_type, postage, status, 
+    payment_time, send_time, end_time, close_time, create_time, update_time
+  </sql>
+  <sql id="Base_Order_Item">
+    o.order_no, o.user_id, o.shipping_id, oi.product_id, oi.product_name, oi.product_image, oi.current_unit_price, oi.quantity
+    , oi.total_price, o.payment_type, o.status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from fmall_order
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from fmall_order
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.fmall.pojo.Order">
+    insert into fmall_order (id, order_no, user_id, 
+      shipping_id, payment, box_id, 
+      payment_type, postage, status, 
+      payment_time, send_time, end_time, 
+      close_time, create_time, update_time
+      )
+    values (#{id,jdbcType=INTEGER}, #{orderNo,jdbcType=BIGINT}, #{userId,jdbcType=INTEGER}, 
+      #{shippingId,jdbcType=INTEGER}, #{payment,jdbcType=DECIMAL}, #{boxId,jdbcType=INTEGER}, 
+      #{paymentType,jdbcType=INTEGER}, #{postage,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, 
+      #{paymentTime,jdbcType=TIMESTAMP}, #{sendTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
+      #{closeTime,jdbcType=TIMESTAMP}, now(), now()
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.fmall.pojo.Order">
+    insert into fmall_order
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="orderNo != null">
+        order_no,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="shippingId != null">
+        shipping_id,
+      </if>
+      <if test="payment != null">
+        payment,
+      </if>
+      <if test="boxId != null">
+        box_id,
+      </if>
+      <if test="paymentType != null">
+        payment_type,
+      </if>
+      <if test="postage != null">
+        postage,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="paymentTime != null">
+        payment_time,
+      </if>
+      <if test="sendTime != null">
+        send_time,
+      </if>
+      <if test="endTime != null">
+        end_time,
+      </if>
+      <if test="closeTime != null">
+        close_time,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="orderNo != null">
+        #{orderNo,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="shippingId != null">
+        #{shippingId,jdbcType=INTEGER},
+      </if>
+      <if test="payment != null">
+        #{payment,jdbcType=DECIMAL},
+      </if>
+      <if test="boxId != null">
+        #{boxId,jdbcType=INTEGER},
+      </if>
+      <if test="paymentType != null">
+        #{paymentType,jdbcType=INTEGER},
+      </if>
+      <if test="postage != null">
+        #{postage,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="paymentTime != null">
+        #{paymentTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sendTime != null">
+        #{sendTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="closeTime != null">
+        #{closeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null">
+        now(),
+      </if>
+      <if test="updateTime != null">
+        now(),
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.fmall.pojo.Order">
+    update fmall_order
+    <set>
+      <if test="orderNo != null">
+        order_no = #{orderNo,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="shippingId != null">
+        shipping_id = #{shippingId,jdbcType=INTEGER},
+      </if>
+      <if test="payment != null">
+        payment = #{payment,jdbcType=DECIMAL},
+      </if>
+      <if test="boxId != null">
+        box_id = #{boxId,jdbcType=INTEGER},
+      </if>
+      <if test="paymentType != null">
+        payment_type = #{paymentType,jdbcType=INTEGER},
+      </if>
+      <if test="postage != null">
+        postage = #{postage,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="paymentTime != null">
+        payment_time = #{paymentTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sendTime != null">
+        send_time = #{sendTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="closeTime != null">
+        close_time = #{closeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = now(),
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.fmall.pojo.Order">
+    update fmall_order
+    set order_no = #{orderNo,jdbcType=BIGINT},
+      user_id = #{userId,jdbcType=INTEGER},
+      shipping_id = #{shippingId,jdbcType=INTEGER},
+      payment = #{payment,jdbcType=DECIMAL},
+      box_id = #{boxId,jdbcType=INTEGER},
+      payment_type = #{paymentType,jdbcType=INTEGER},
+      postage = #{postage,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER},
+      payment_time = #{paymentTime,jdbcType=TIMESTAMP},
+      send_time = #{sendTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      close_time = #{closeTime,jdbcType=TIMESTAMP},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = now()
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <delete id="deleteOrder" parameterType="map">
+    delete from fmall_order
+    where user_id = #{userId}
+    and order_no = #{orderNo}
+  </delete>
+  <select id="showOrdersByUserId" resultMap="BaseOrderAndOrderItem" parameterType="map">
+    select
+    <include refid="Base_Order_Item"/>
+    from fmall_order o,fmall_order_item oi
+    where o.order_no = oi.order_no
+    <if test="status != 0">
+      and o.status = #{status}
+    </if>
+    and o.user_id = #{userId}
+  </select>
+  <select id="selectExist" parameterType="map" resultType="java.lang.Integer">
+        select count(1)
+        from fmall_order
+        where user_id = #{userId}
+        and order_no = #{orderNo}
+  </select>
+  <select id="queryAllOrders" resultType="com.fmall.pojo.Order">
+    select * from fmall_order
+  </select>
+  <select id="queryOrdersByOrderNo" resultType="com.fmall.pojo.Order">
+    select * from fmall_order
+    where
+    order_no like concat('%',#{orderNo},'%')
+  </select>
+  <update id="updateStatusByOrderNo" parameterType="map">
+        update fmall_order
+        set status = #{status},
+        payment_time = now()
+        where order_no = #{orderNo}
+  </update>
+  <select id="checkedShippingId" parameterType="java.lang.Long" resultType="java.lang.Integer">
+    select shipping_id
+    from fmall_order
+    where order_no = #{orderNo}
+  </select>
+  <delete id="deleteOrderBySeller" parameterType="java.lang.Long">
+    delete from fmall_order
+    where order_no = #{orderNo}
+  </delete>
+  <delete id="deleteOrderById">
+    delete from fmall_order
+    where id =#{id}
+  </delete>
+  <update id="updateBoxIdAndStatusByOrderNo" parameterType="map">
+    update fmall_order
+    set box_id = #{boxId},
+        status = #{status}
+    where order_no = #{orderNo}
+  </update>
+</mapper>

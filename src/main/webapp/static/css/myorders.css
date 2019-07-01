@@ -1,0 +1,16 @@
+@charset "utf-8";
+/* CSS Document */
+.box{
+	padding: 0 200px;
+}
+table{
+	word-break:break-all;
+	word-wrap: break-word;
+}
+tbody tr td div{
+	line-height: 100px;
+}
+table thead tr th{
+	text-align: center;
+	background-color: #95BDFF;
+}

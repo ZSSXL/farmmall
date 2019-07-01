@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fmall.dao.LogisticsMapper">
+  <resultMap id="BaseResultMap" type="com.fmall.pojo.Logistics">
+    <constructor>
+      <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="box_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="temperature" javaType="java.lang.Double" jdbcType="DOUBLE" />
+      <arg column="humidity" javaType="java.lang.Double" jdbcType="DOUBLE" />
+      <arg column="longitude" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
+      <arg column="latitude" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
+      <arg column="create_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="update_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+    </constructor>
+  </resultMap>
+  <resultMap id="BaseSimpleResultMap" type="com.fmall.vo.LogisticsSimple">
+    <constructor>
+      <arg column="longitude" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
+      <arg column="latitude" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, box_id, temperature, humidity, longitude, latitude, create_time, update_time
+  </sql>
+  <sql id="Base_Simple_List">
+    longitude,latitude
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from fmall_logistics
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="getTime" resultType="java.util.Date">
+    select create_time
+      from fmall_logistics
+       where box_id =#{boxId}
+      order by  create_time desc
+      limit 30
+  </select>
+  <select id="getHumidity" resultType="java.lang.Double">
+    select humidity
+      from fmall_logistics
+       where box_id =#{boxId}
+      order by  create_time desc
+      limit 30
+  </select>
+  <select id="getTemperature" resultType="java.lang.Double">
+    select temperature
+      from fmall_logistics
+      where box_id =#{boxId}
+      order by  create_time desc
+      limit 30
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from fmall_logistics
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.fmall.pojo.Logistics">
+    insert into fmall_logistics (id, box_id, temperature, 
+      humidity, longitude, latitude, 
+      create_time, update_time)
+    values (#{id,jdbcType=INTEGER}, #{boxId,jdbcType=INTEGER}, #{temperature,jdbcType=DOUBLE}, 
+      #{humidity,jdbcType=DOUBLE}, #{longitude,jdbcType=DECIMAL}, #{latitude,jdbcType=DECIMAL}, 
+      now(), now())
+  </insert>
+  <insert id="insertById">
+   insert into fmall_logistics values (null ,9 ,#{id},null,null,null,now(),now())
+  </insert>
+  <insert id="insertSelective" parameterType="com.fmall.pojo.Logistics">
+    insert into fmall_logistics
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="boxId != null">
+        box_id,
+      </if>
+      <if test="temperature != null">
+        temperature,
+      </if>
+      <if test="humidity != null">
+        humidity,
+      </if>
+      <if test="longitude != null">
+        longitude,
+      </if>
+      <if test="latitude != null">
+        latitude,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="boxId != null">
+        #{boxId,jdbcType=INTEGER},
+      </if>
+      <if test="temperature != null">
+        #{temperature,jdbcType=DOUBLE},
+      </if>
+      <if test="humidity != null">
+        #{humidity,jdbcType=DOUBLE},
+      </if>
+      <if test="longitude != null">
+        #{longitude,jdbcType=DECIMAL},
+      </if>
+      <if test="latitude != null">
+        #{latitude,jdbcType=DECIMAL},
+      </if>
+      <if test="createTime != null">
+        now(),
+      </if>
+      <if test="updateTime != null">
+        now(),
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.fmall.pojo.Logistics">
+    update fmall_logistics
+    <set>
+      <if test="boxId != null">
+        box_id = #{boxId,jdbcType=INTEGER},
+      </if>
+      <if test="temperature != null">
+        temperature = #{temperature,jdbcType=DOUBLE},
+      </if>
+      <if test="humidity != null">
+        humidity = #{humidity,jdbcType=DOUBLE},
+      </if>
+      <if test="longitude != null">
+        longitude = #{longitude,jdbcType=DECIMAL},
+      </if>
+      <if test="latitude != null">
+        latitude = #{latitude,jdbcType=DECIMAL},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = now(),
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.fmall.pojo.Logistics">
+    update fmall_logistics
+    set box_id = #{boxId,jdbcType=INTEGER},
+      temperature = #{temperature,jdbcType=DOUBLE},
+      humidity = #{humidity,jdbcType=DOUBLE},
+      longitude = #{longitude,jdbcType=DECIMAL},
+      latitude = #{latitude,jdbcType=DECIMAL},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = now()
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectOne" resultMap="BaseSimpleResultMap" parameterType="java.lang.Integer">
+    select
+    <include refid="Base_Simple_List"/>
+    from fmall_logistics
+    where box_id = #{boxId}
+    order by create_time desc
+    limit 1
+  </select>
+</mapper>

@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fmall.dao.CartMapper">
+  <resultMap id="BaseResultMap" type="com.fmall.pojo.Cart">
+    <constructor>
+      <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="user_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="product_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="quantity" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="checked" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="create_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="update_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+    </constructor>
+  </resultMap>
+  <resultMap id="BaseCartProductMap" type="com.fmall.vo.CartProductVo">
+    <constructor>
+      <arg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="user_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="product_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="quantity" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="checked" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="main_image" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="name" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="price" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
+    </constructor>
+  </resultMap>
+  <resultMap id="BasePriceQuantity" type="com.fmall.vo.TotalPriceVo">
+    <constructor>
+      <arg column="quantity" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="price" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
+    </constructor>
+  </resultMap>
+  <resultMap id="BaseProductIdQuantityMap" type="com.fmall.vo.ProductIdAndQuantiry">
+    <constructor>
+      <arg column="product_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="quantity" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, product_id, quantity, checked, create_time, update_time
+  </sql>
+  <sql id="Base_Column_simple_List">
+    fc.id, fc.user_id, fc.product_id, fc.quantity, fc.checked,fp.main_image,fp.name,fp.price
+  </sql>
+  <sql id="Base_Column_Price_Quantity">
+    fc.quantity,fp.price
+  </sql>
+  <sql id="Base_Column_ProductId_Quantity">
+    product_id,quantity
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from fmall_cart
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from fmall_cart
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.fmall.pojo.Cart">
+    insert into fmall_cart (id, user_id, product_id, 
+      quantity, checked, create_time, 
+      update_time)
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{productId,jdbcType=INTEGER}, 
+      #{quantity,jdbcType=INTEGER}, #{checked,jdbcType=INTEGER}, now(),
+      now())
+  </insert>
+  <insert id="insertSelective" parameterType="com.fmall.pojo.Cart">
+    insert into fmall_cart
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="productId != null">
+        product_id,
+      </if>
+      <if test="quantity != null">
+        quantity,
+      </if>
+      <if test="checked != null">
+        checked,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="productId != null">
+        #{productId,jdbcType=INTEGER},
+      </if>
+      <if test="quantity != null">
+        #{quantity,jdbcType=INTEGER},
+      </if>
+      <if test="checked != null">
+        #{checked,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        now(),
+      </if>
+      <if test="updateTime != null">
+        now(),
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.fmall.pojo.Cart">
+    update fmall_cart
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="productId != null">
+        product_id = #{productId,jdbcType=INTEGER},
+      </if>
+      <if test="quantity != null">
+        quantity = #{quantity,jdbcType=INTEGER},
+      </if>
+      <if test="checked != null">
+        checked = #{checked,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        now(),
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.fmall.pojo.Cart">
+    update fmall_cart
+    set user_id = #{userId,jdbcType=INTEGER},
+      product_id = #{productId,jdbcType=INTEGER},
+      quantity = #{quantity,jdbcType=INTEGER},
+      checked = #{checked,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = now()
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectCartByUserId" resultMap="BaseCartProductMap" parameterType="java.lang.Integer">
+    select
+    <include refid="Base_Column_simple_List"/>
+    from fmall_cart fc,fmall_product fp
+    where fc.user_id = #{userId}
+    and fc.product_id = fp.id
+  </select>
+  <delete id="deleteCartByUserIdCartId" parameterType="map">
+    delete  from fmall_cart
+    where user_id = #{userId}
+    and id = #{cartId}
+  </delete>
+  <update id="selectChecked" parameterType="map">
+    update fmall_cart
+    set checked = #{type}
+    where user_id = #{userId}
+    and id = #{cartId}
+  </update>
+  <update id="updateAllCheckedByUserId" parameterType="map">
+    update fmall_cart
+    <if test="type == 1">
+      set checked = 1
+    </if>
+    <if test="type == 0">
+      set checked = 0
+    </if>
+    where user_id = #{userId}
+  </update>
+  <update id="addQuantity" parameterType="map">
+    update fmall_cart
+    set quantity = quantity + 1
+    where user_id = #{userId}
+    and id = #{cartId}
+  </update>
+  <update id="decQuantity" parameterType="map">
+    update fmall_cart
+    set quantity = quantity - 1
+    where user_id = #{userId}
+    and id = #{cartId}
+  </update>
+  <select id="selectPriceAndQUantityByUserId" resultMap="BasePriceQuantity" parameterType="java.lang.Integer">
+    select
+    <include refid="Base_Column_Price_Quantity"/>
+    from fmall_product fp,fmall_cart fc
+    where fc.product_id = fp.id
+    and fc.user_id = #{userId}
+    and fc.checked = 1
+  </select>
+  <select id="selectProductIdQuantiyByUserId" resultMap="BaseProductIdQuantityMap" parameterType="java.lang.Integer">
+    select
+    <include refid="Base_Column_ProductId_Quantity"/>
+    from fmall_cart
+    where user_id = #{userId}
+    and checked = 1
+  </select>
+  <select id="selectCheckedCartIdByUserId" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+    select id
+    from fmall_cart
+    where user_id = #{userId}
+    and checked = 1
+  </select>
+  <delete id="deleteCartByUserIdProductIdQuantity" parameterType="map">
+    delete  from fmall_cart
+    where user_id = #{userId}
+    and product_id = #{productId}
+    and quantity = #{quantity}
+  </delete>
+</mapper>

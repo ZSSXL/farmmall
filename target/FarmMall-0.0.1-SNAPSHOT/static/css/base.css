@@ -1,0 +1,52 @@
+@charset "utf-8";
+/* CSS Document */
+#footer {
+	height: 360px;
+	background-color: rgba(215,215,215,1.00);
+	clear: both;
+	position: relative;
+	top: 20px;
+	
+}
+#footer .top {
+	width: 1263px;
+	height: 281px;
+	margin: 0 auto;
+	text-align: center;
+}
+
+#footer .block {
+	width: 410px;
+	height: 280px;
+	display: inline-block;
+	text-align: left;
+	clor:#ccc;
+	vertical-align: top;
+}
+#footer h2 {
+	font-size: 24px;
+	font-weight: normal;
+	padding: 20px 0 0 20px;
+	color: rgba(55,55,55,1.00);
+}
+#footer hr {
+	width: 90%;
+	border: 1px dashed #333;
+}
+#footer ul {
+	font-size: 18px;
+	color: #777;
+	text-indent: 20px;
+	line-height: 2;
+}
+#footer .bottom {
+	height: 80px;
+	line-height: 80px;
+	text-align: center;
+	color: #777;
+	border-top: 1px solid #444;
+	background-color: #000；
+}
+
+
+

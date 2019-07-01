@@ -1,0 +1,54 @@
+@charset "utf-8";
+/* CSS Document */
+body{
+	margin: 0px;
+}
+.box{
+	width: 900px;
+	height: 600px;
+	margin: 60px auto;
+	border: solid 2px black;
+	background-color: #95BDFF;
+}
+span{
+	font-size: 24px;
+	font-weight: 24px;
+}
+.lock{
+	line-height: 100px;
+	text-align: center;
+}
+.tail{
+	height: 40px;
+	margin-left: 15px;
+}
+.tail{
+	line-height: 40px;
+}
+.to_right {
+width: 0;
+height: 0;
+border-top: 20px solid transparent;
+border-bottom: 20px solid transparent;
+margin-left: 169px;
+}
+.tail1{
+	height: 40px;
+}
+.tail1{
+	line-height: 40px;
+}
+.to_right1 {
+width: 0;
+height: 0;
+border-top: 20px solid transparent;
+border-bottom: 20px solid transparent;
+margin-left: 154px;
+}
+.tran{
+	transform: translate(190px,-40px);
+}
+h4{
+	transform: translateY(-20px);
+	margin-left: 30px;
+}

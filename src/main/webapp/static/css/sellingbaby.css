@@ -1,0 +1,64 @@
+@charset "utf-8";
+/* CSS Document */
+body{
+	margin: 0;
+}
+.head{
+	width: 100%;
+	height: 60px;
+	/*background-color: rgba(247,91,93,1.00);*/
+	background-color: #79AAFB;
+}
+.head ul li{
+	float: left;
+	list-style: none;
+}
+.head h3{
+	padding-left: 200px;
+	color: white;	
+}
+.head a{
+	display: block;
+	color: white;
+	line-height: 60px;
+    width: 100px;
+	height: 60px;
+	text-align: center;
+}
+.head a:hover,.head a:active{
+	background-color: rgba(0,0,0,0.1);
+	text-decoration: none;
+	color: white;
+}
+.box{
+	width: 1200px;
+	height: 600px;
+	margin: 0 auto;
+}
+.aside{
+	height: 600px;
+	margin-top: 10px;
+}
+.aside a{
+	font-size: 18px;
+	font-weight: 10px;
+}
+.middle{
+	padding: 10px;
+	height: 200px;
+}
+.seller{
+	height: 40px;
+	line-height: 40px;
+}
+thead tr th{
+	text-align: center;
+}
+thead{
+	background-color: rgba(224,215,215,0.50);
+}
+div a:hover{
+	text-decoration: none;
+	color:  rgba(247,91,93,1.00);
+}
+

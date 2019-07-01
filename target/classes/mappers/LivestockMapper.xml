@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fmall.dao.LivestockMapper">
+      <resultMap id="BaseResultMap" type="com.fmall.pojo.Livestock">
+            <constructor>
+                  <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+                  <arg column="label" javaType="java.lang.Integer" jdbcType="INTEGER" />
+                  <arg column="varieties" javaType="java.lang.String" jdbcType="VARCHAR" />
+                  <arg column="weight" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
+                  <arg column="faces" javaType="java.lang.String" jdbcType="VARCHAR" />
+                  <arg column="staple_food" javaType="java.lang.String" jdbcType="VARCHAR" />
+                  <arg column="medical_record" javaType="java.lang.String" jdbcType="VARCHAR" />
+                  <arg column="health" javaType="java.lang.String" jdbcType="VARCHAR" />
+                  <arg column="vaccine" javaType="java.lang.String" jdbcType="VARCHAR" />
+                  <arg column="age" javaType="java.lang.Integer" jdbcType="INTEGER" />
+                  <arg column="photo" javaType="java.lang.String" jdbcType="VARCHAR" />
+                  <arg column="origin" javaType="java.lang.String" jdbcType="VARCHAR" />
+                  <arg column="create_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+                  <arg column="update_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+            </constructor>
+      </resultMap>
+      <resultMap id="BaseResultSimpleMap" type="com.fmall.pojo.Livestock">
+            <constructor>
+                  <arg column="label" javaType="java.lang.Integer" jdbcType="INTEGER" />
+                  <arg column="varieties" javaType="java.lang.String" jdbcType="VARCHAR" />
+            </constructor>
+      </resultMap>
+      <sql id="Base_Column_List">
+            id, label, varieties, weight, faces, staple_food, medical_record, health, vaccine, age, photo, origin,
+            create_time, update_time
+      </sql>
+      <sql id="Base_Column_List_My">
+            fl.id, fl.label, fl.varieties, fl.weight, fl.faces, fl.staple_food, fl.medical_record
+            , fl.health, fl.vaccine, fl.age, fl.photo, fl.origin,fl.create_time, fl.update_time
+      </sql>
+      <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+            select
+            <include refid="Base_Column_List" />
+            from fmall_livestock
+            where id = #{id,jdbcType=INTEGER}
+      </select>
+      <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+            delete from fmall_livestock
+            where id = #{id,jdbcType=INTEGER}
+      </delete>
+      <insert id="insert" parameterType="com.fmall.pojo.Livestock">
+            insert into fmall_livestock (id, label, varieties, weight,
+            faces, staple_food, medical_record,health,
+            vaccine, age, photo,
+            origin, create_time, update_time
+            )
+            values (#{id,jdbcType=INTEGER},#{label,jdbcType=INTEGER}, #{varieties,jdbcType=VARCHAR}, #{weight,jdbcType=DECIMAL},
+            #{faces,jdbcType=VARCHAR}, #{stapleFood,jdbcType=VARCHAR}, #{medicalRecord,jdbcType=VARCHAR}, #{health,jdbcType=VARCHAR},
+            #{vaccine,jdbcType=VARCHAR}, #{age,jdbcType=INTEGER}, #{photo,jdbcType=VARCHAR},
+            #{origin,jdbcType=VARCHAR}, now(), now()
+            )
+      </insert>
+      <insert id="insertSelective" parameterType="com.fmall.pojo.Livestock">
+            insert into fmall_livestock
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                  <if test="id != null">
+                        id,
+                  </if>
+                  <if test="label != null">
+                        label,
+                  </if>
+                  <if test="varieties != null">
+                        varieties,
+                  </if>
+                  <if test="weight != null">
+                        weight,
+                  </if>
+                  <if test="faces != null">
+                        faces,
+                  </if>
+                  <if test="stapleFood != null">
+                        staple_food,
+                  </if>
+                  <if test="medicalRecord != null">
+                        medical_record,
+                  </if>
+                  <if test="health != null">
+                        health,
+                  </if>
+                  <if test="vaccine != null">
+                        vaccine,
+                  </if>
+                  <if test="age != null">
+                        age,
+                  </if>
+                  <if test="photo != null">
+                        photo,
+                  </if>
+                  <if test="origin != null">
+                        origin,
+                  </if>
+                  <if test="createTime != null">
+                        create_time,
+                  </if>
+                  <if test="updateTime != null">
+                        update_time,
+                  </if>
+            </trim>
+            <trim prefix="values (" suffix=")" suffixOverrides=",">
+                  <if test="id != null">
+                        #{id,jdbcType=INTEGER},
+                  </if>
+                  <if test="label != null">
+                        #{label,jdbcType=INTEGER},
+                  </if>
+                  <if test="varieties != null">
+                        #{varieties,jdbcType=VARCHAR},
+                  </if>
+                  <if test="weight != null">
+                        #{weight,jdbcType=DECIMAL},
+                  </if>
+                  <if test="faces != null">
+                        #{faces,jdbcType=VARCHAR},
+                  </if>
+                  <if test="stapleFood != null">
+                        #{stapleFood,jdbcType=VARCHAR},
+                  </if>
+                  <if test="medicalRecord != null">
+                        #{medicalRecord,jdbcType=VARCHAR},
+                  </if>
+                  <if test="vaccine != null">
+                        #{vaccine,jdbcType=VARCHAR},
+                  </if>
+                  <if test="age != null">
+                        #{age,jdbcType=INTEGER},
+                  </if>
+                  <if test="photo != null">
+                        #{photo,jdbcType=VARCHAR},
+                  </if>
+                  <if test="origin != null">
+                        #{origin,jdbcType=VARCHAR},
+                  </if>
+                  <if test="createTime != null">
+                        now(),
+                  </if>
+                  <if test="updateTime != null">
+                        now(),
+                  </if>
+            </trim>
+      </insert>
+      <update id="updateByPrimaryKeySelective" parameterType="com.fmall.pojo.Livestock">
+            update fmall_livestock
+            <set>
+                  <if test="label != null">
+                        label = #{varieties,jdbcType=INTEGER},
+                  </if>
+                  <if test="varieties != null">
+                        varieties = #{varieties,jdbcType=VARCHAR},
+                  </if>
+                  <if test="weight != null">
+                        weight = #{weight,jdbcType=DECIMAL},
+                  </if>
+                  <if test="faces != null">
+                        faces = #{faces,jdbcType=VARCHAR},
+                  </if>
+                  <if test="stapleFood != null">
+                        staple_food = #{stapleFood,jdbcType=VARCHAR},
+                  </if>
+                  <if test="medicalRecord != null">
+                        medical_record = #{medicalRecord,jdbcType=VARCHAR},
+                  </if>
+                  <if test="health != null">
+                        health = #{medicalRecord,jdbcType=VARCHAR},
+                  </if>
+                  <if test="vaccine != null">
+                        vaccine = #{vaccine,jdbcType=VARCHAR},
+                  </if>
+                  <if test="age != null">
+                        age = #{age,jdbcType=INTEGER},
+                  </if>
+                  <if test="photo != null">
+                        photo = #{photo,jdbcType=VARCHAR},
+                  </if>
+                  <if test="origin != null">
+                        origin = #{origin,jdbcType=VARCHAR},
+                  </if>
+                  <if test="createTime != null">
+                        create_time = #{createTime,jdbcType=TIMESTAMP},
+                  </if>
+                  <if test="updateTime != null">
+                        update_time = now(),
+                  </if>
+            </set>
+            where id = #{id,jdbcType=INTEGER}
+      </update>
+      <update id="updateByPrimaryKey" parameterType="com.fmall.pojo.Livestock">
+            update fmall_livestock
+            set label = #{label,jdbcType=INTEGER},
+            varieties = #{varieties,jdbcType=VARCHAR},
+            weight = #{weight,jdbcType=DECIMAL},
+            faces = #{faces,jdbcType=VARCHAR},
+            staple_food = #{stapleFood,jdbcType=VARCHAR},
+            medical_record = #{medicalRecord,jdbcType=VARCHAR},
+            health = #{health,jdbcType=VARCHAR},
+            vaccine = #{vaccine,jdbcType=VARCHAR},
+            age = #{age,jdbcType=INTEGER},
+            photo = #{photo,jdbcType=VARCHAR},
+            origin = #{origin,jdbcType=VARCHAR},
+            create_time = #{createTime,jdbcType=TIMESTAMP},
+            update_time = now()
+            where id = #{id,jdbcType=INTEGER}
+      </update>
+      <select id="getAllLivestock" resultMap="BaseResultSimpleMap">
+            select label,varieties
+            from fmall_livestock
+      </select>
+      <select id="selectByLabel" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+            select
+            <include refid="Base_Column_List_My"/>
+            from fmall_livestock fl,fmall_product fp
+            where fp.livestock = fl.label
+            and fp.livestock = #{label}
+            ORDER BY fp.create_time DESC
+            LIMIT 1
+      </select>
+      <select id="selectLivestockByLabelAndVarieties" resultMap="BaseResultMap" parameterType="map">
+            select
+            <include refid="Base_Column_List"/>
+            from fmall_livestock
+            where label = #{label}
+            and varieties = #{varieties}
+            order by create_time desc
+            limit 1
+      </select>
+</mapper>

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fmall.dao.EnviromentMapper">
+  <resultMap id="BaseResultMap" type="com.fmall.pojo.Enviroment">
+    <constructor>
+      <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="annimal_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="temperature" javaType="java.lang.Double" jdbcType="DOUBLE" />
+      <arg column="humidity" javaType="java.lang.Double" jdbcType="DOUBLE" />
+      <arg column="longitude" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
+      <arg column="latitude" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
+      <arg column="create_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="update_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, annimal_id, temperature, humidity, longitude, latitude, create_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from fmall_enviroment
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="getTime" resultType="java.util.Date">
+    select create_time
+      from fmall_enviroment
+       where annimal_id =#{annimalId}
+      order by  create_time desc
+      limit 30
+  </select>
+  <select id="getTemperature" resultType="java.lang.Double">
+    select temperature
+      from fmall_enviroment
+       where annimal_id =#{annimalId}
+      order by  create_time desc
+      limit 30
+  </select>
+  <select id="getHumidity" resultType="java.lang.Double">
+    select humidity
+      from fmall_enviroment
+       where annimal_id =#{annimalId}
+      order by  create_time desc
+      limit 30
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from fmall_enviroment
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.fmall.pojo.Enviroment">
+    insert into fmall_enviroment (id, annimal_id, temperature, 
+      humidity, longitude, latitude, 
+      create_time, update_time)
+    values (#{id,jdbcType=INTEGER}, #{annimalId,jdbcType=INTEGER}, #{temperature,jdbcType=DOUBLE}, 
+      #{humidity,jdbcType=DOUBLE}, #{longitude,jdbcType=DECIMAL}, #{latitude,jdbcType=DECIMAL}, 
+      now(),now())
+  </insert>
+  <insert id="insertSelective" parameterType="com.fmall.pojo.Enviroment">
+    insert into fmall_enviroment
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="annimalId != null">
+        annimal_id,
+      </if>
+      <if test="temperature != null">
+        temperature,
+      </if>
+      <if test="humidity != null">
+        humidity,
+      </if>
+      <if test="longitude != null">
+        longitude,
+      </if>
+      <if test="latitude != null">
+        latitude,
+      </if>
+        create_time,
+        update_time,
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="annimalId != null">
+        #{annimalId,jdbcType=INTEGER},
+      </if>
+      <if test="temperature != null">
+        #{temperature,jdbcType=DOUBLE},
+      </if>
+      <if test="humidity != null">
+        #{humidity,jdbcType=DOUBLE},
+      </if>
+      <if test="longitude != null">
+        #{longitude,jdbcType=DECIMAL},
+      </if>
+      <if test="latitude != null">
+        #{latitude,jdbcType=DECIMAL},
+      </if>
+        now(),
+        now(),
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.fmall.pojo.Enviroment">
+    update fmall_enviroment
+    <set>
+      <if test="annimalId != null">
+        annimal_id = #{annimalId,jdbcType=INTEGER},
+      </if>
+      <if test="temperature != null">
+        temperature = #{temperature,jdbcType=DOUBLE},
+      </if>
+      <if test="humidity != null">
+        humidity = #{humidity,jdbcType=DOUBLE},
+      </if>
+      <if test="longitude != null">
+        longitude = #{longitude,jdbcType=DECIMAL},
+      </if>
+      <if test="latitude != null">
+        latitude = #{latitude,jdbcType=DECIMAL},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+        update_time = now(),
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.fmall.pojo.Enviroment">
+    update fmall_enviroment
+    set annimal_id = #{annimalId,jdbcType=INTEGER},
+      temperature = #{temperature,jdbcType=DOUBLE},
+      humidity = #{humidity,jdbcType=DOUBLE},
+      longitude = #{longitude,jdbcType=DECIMAL},
+      latitude = #{latitude,jdbcType=DECIMAL},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = now()
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
