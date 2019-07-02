@@ -29,6 +29,12 @@
                 <input type="text" id="va" placeholder="请输入牲畜种类">
                 <input type="button" id="select_btn" title="查询" value="查询">
         </div>
+        <hr/>
+        <div>
+                <h2>查询测试</h2>
+                <span>用户id</span><input type="text" id="userId" placeholder="请输入用户id">
+                <button id="search_btn">查询</button>
+        </div>
 </div>
         <script type="text/javascript">
             $("#headPic").click(function () {
@@ -76,6 +82,18 @@
                     url:"${APP_PATH}/livestock/scanning_query.do",
                     type:"get",
                     data:"label="+label+"&va="+va,
+                    success:function (result) {
+                        console.log(result);
+                    }
+                });
+            });
+
+            $("#search_btn").click(function () {
+                var userId = $("#userId").val();
+                $.ajax({
+                    url:"${APP_PATH}/user/test.do",
+                    type:"post",
+                    data:"userId="+userId,
                     success:function (result) {
                         console.log(result);
                     }

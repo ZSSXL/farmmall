@@ -20,7 +20,9 @@ public class Enviroment {
 
     private Date updateTime;
 
-    public Enviroment(Integer id, Integer annimalId, Double temperature, Double humidity, BigDecimal longitude, BigDecimal latitude, Date createTime, Date updateTime) {
+    private Integer label;
+
+    public Enviroment(Integer id, Integer annimalId, Double temperature, Double humidity, BigDecimal longitude, BigDecimal latitude, Date createTime, Date updateTime, Integer label) {
         this.id = id;
         this.annimalId = annimalId;
         this.temperature = temperature;
@@ -29,10 +31,19 @@ public class Enviroment {
         this.latitude = latitude;
         this.createTime = createTime;
         this.updateTime = updateTime;
+        this.label = label;
     }
 
     public Enviroment() {
         super();
+    }
+
+    public Integer getLabel() {
+        return label;
+    }
+
+    public void setLabel(Integer label) {
+        this.label = label;
     }
 
     public Integer getId() {

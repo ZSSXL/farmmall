@@ -23,4 +23,6 @@ public interface LivestockMapper {
     Livestock selectByLabel(Integer label);
 
     Livestock selectLivestockByLabelAndVarieties(@Param("label") Integer label,@Param("varieties") String varieties);
+
+    Livestock selectLivestockByLabel(@Param("label") Integer label);
 }

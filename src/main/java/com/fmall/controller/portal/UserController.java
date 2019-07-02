@@ -3,6 +3,7 @@ package com.fmall.controller.portal;
 import com.fmall.common.Const;
 import com.fmall.common.ResponseCode;
 import com.fmall.common.ServerResponse;
+import com.fmall.dao.UserMapper;
 import com.fmall.pojo.User;
 import com.fmall.service.IUserService;
 import org.apache.commons.lang3.StringUtils;

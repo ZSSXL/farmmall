@@ -28,5 +28,5 @@ public interface LogisticsMapper {
 
     void insertById(@Param("id") Double id);
 
-    LogisticsSimple selectOne(Integer boxId);
+    List<LogisticsSimple> selectOne(Integer boxId);
 }

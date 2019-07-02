@@ -29,7 +29,7 @@ public class LogisticsServiceImpl implements ILogisticsService {
     }
 
     @Override
-    public LogisticsSimple selectOne(Integer boxId) {
+    public List<LogisticsSimple> selectOne(Integer boxId) {
         return logisticsMapper.selectOne(boxId);
     }
 

@@ -165,7 +165,5 @@
     <include refid="Base_Simple_List"/>
     from fmall_logistics
     where box_id = #{boxId}
-    order by create_time desc
-    limit 1
   </select>
 </mapper>

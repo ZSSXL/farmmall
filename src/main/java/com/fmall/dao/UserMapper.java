@@ -2,6 +2,8 @@ package com.fmall.dao;
 
 import com.fmall.pojo.User;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.SelectKey;
 
 import java.util.List;
 
@@ -36,9 +38,7 @@ public interface UserMapper {
 
     User doAjaxLogin(User user);
 
-
     List<User> queryBuyer();
-
 
     List<User> querySeller();
 

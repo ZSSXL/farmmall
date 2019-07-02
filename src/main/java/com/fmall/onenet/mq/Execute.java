@@ -157,6 +157,7 @@ public class Execute extends Thread {
                  enviroment.setHumidity(humidity);
                  enviroment.setLongitude(new BigDecimal(longitude));
                  enviroment.setLatitude(new BigDecimal(latitude));
+                 enviroment.setLabel(1000101);
                  onenetService.save_environment(enviroment);
                 System.out.println("牲畜跟踪系统ok");
                 }

@@ -5,6 +5,7 @@ import com.fmall.common.ServerResponse;
 import com.fmall.service.IEnviromentService;
 import com.fmall.service.ILogisticsService;
 import com.fmall.util.DateFormat;
+import com.fmall.vo.EnviromentVo;
 import com.fmall.vo.LogisticsSimple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,8 +21,7 @@ public class EcharController {
     @Autowired
     private ILogisticsService logisticsService;
     @Autowired
-    private IEnviromentService enviromentService;
-
+    private IEnviromentService iEnviromentService;
 
     @RequestMapping(value = "/echar.do",method = RequestMethod.GET)
     @ResponseBody
@@ -45,21 +45,22 @@ public class EcharController {
 
     @RequestMapping(value = "/show_logistic.do",method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<LogisticsSimple> mapShow(Integer boxId){
-        LogisticsSimple logisticsSimple = logisticsService.selectOne(boxId);
-        if(logisticsSimple == null){
+    public ServerResponse<List<LogisticsSimple>> mapShow(Integer boxId){
+        List<LogisticsSimple> logisticsSimpleList = logisticsService.selectOne(boxId);
+        if(logisticsSimpleList == null){
             return ServerResponse.createByErrorMessage("查询失败");
         }
-        return ServerResponse.createBySuccess(logisticsSimple);
+        return ServerResponse.createBySuccess(logisticsSimpleList);
     }
+
 
     @RequestMapping(value = "/enviroment.do",method = RequestMethod.GET)
     @ResponseBody
     public Map<String,Object> enviromentShow(@RequestParam(value = "annimalId") Integer annimalId){
         Map<String,Object> map = new HashMap<>();
-        List<Double> temperature = enviromentService.getTemperature(annimalId);
-        List<Date> time = enviromentService.getTime(annimalId);
-        List<Double> humidity = enviromentService.getHumidity(annimalId);
+        List<Double> temperature = iEnviromentService.getTemperature(annimalId);
+        List<Date> time = iEnviromentService.getTime(annimalId);
+        List<Double> humidity = iEnviromentService.getHumidity(annimalId);
         Collections.reverse(time);
         Collections.reverse(temperature);
         Collections.reverse(humidity);
@@ -71,5 +72,12 @@ public class EcharController {
         map.put("time",s_time);
         map.put("humidity",humidity);
         return map;
+    }
+
+    @RequestMapping(value = "show_enviromen.do",method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse<List<EnviromentVo>> showEnvironment(Integer label){
+        ServerResponse<List<EnviromentVo>> serverResponse = iEnviromentService.selectEnviromentSimple(label);
+        return serverResponse;
     }
 }

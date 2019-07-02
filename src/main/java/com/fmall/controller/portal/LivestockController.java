@@ -38,9 +38,6 @@ public class LivestockController {
     @RequestMapping(value = "scanning_query.do",method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<Livestock> getLivestoce(Integer label,Integer va){
-
-        System.out.println("处理前：标签："+label+"种类："+va);
-
         String varieties = "";
         if(va == 1){
             varieties = "猪";
@@ -52,15 +49,11 @@ public class LivestockController {
             varieties = "羊";
             label = label * 100 + 3;
         }
-
         if(label == null || varieties == ""){
             return ServerResponse.createByErrorMessage("传了错误的参数");
         }
-
-        System.out.println("处理后：标签："+label+" 种类："+varieties);
-
         // 1、查询出牲畜信息
-        ServerResponse<Livestock> serverResponse = iLivestockService.selectLivestockByLabelAndVarieties(label,varieties);
+        ServerResponse<Livestock> serverResponse = iLivestockService.selectLivestockByLabel(label);
         return serverResponse;
     }
 

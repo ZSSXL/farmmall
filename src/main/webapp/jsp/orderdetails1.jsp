@@ -14,7 +14,7 @@
 	<link rel="stylesheet" type="text/css" href="${APP_PATH}/static/css/orderdetails1.css">
 	<link rel="stylesheet" href="${APP_PATH}/static/bootstrap3.3.7/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css" />
-	<script src="https://webapi.amap.com/maps?v=1.4.15&key=您申请的key值&plugin=AMap.PolyEditor"></script>
+	<script src="https://webapi.amap.com/maps?v=1.4.15&key=7b4b13243e3bb0c9cfef5cee91268600&plugin=AMap.PolyEditor"></script>
 	<script src="https://a.amap.com/jsapi_demos/static/demo-center/js/demoutils.js"></script>
 	<script type="text/javascript" src="${APP_PATH}/static/js/jquery3.4.1.min.js"></script>
 	<script type="text/javascript" src="${APP_PATH}/static/bootstrap3.3.7/js/bootstrap.min.js"></script>
@@ -229,67 +229,53 @@
 </script>
 
 <script type="text/javascript">
-	var map = new AMap.Map("map", {
-		center: [ 116.397637, 39.900001 ],
-		zoom: 14
+
+	var path = new Array();
+
+	$(function () {
+		$.ajax({
+			url:"${APP_PATH}/show_logistic.do",
+			type:"get",
+			data:"boxId="+${sessionScope.currentOrder.boxId},
+			success:function(result){
+				 console.log(result);
+				 analisisResult(result);
+			}
+		});
 	});
 
-	var path = [//每个弧线段有两种描述方式
-		[116.39, 39.91],//起点
-		//第一段弧线
-		[116.380298, 39.907771],//控制点，途经点
-		//第二段弧线
-		//[54.385298, 116.907771, 116.40, 39.90],///控制点，途经点//弧线段有两种描述方式1
-		//第三段弧线
-		/*[//弧线段有两种描述方式2
-			[116.392872, 39.887391],//控制点
-			[116.40772, 39.909252],//控制点
-			[116.41, 39.89]//途经点
-		],*/
-		//第四段弧线
-		/*[116.423857, 39.889498, 116.422312, 39.899639, 116.425273, 39.902273]*/
-		//控制点，控制点，途经点，每段最多两个控制点
-	];
+	// 地图显示 1
+	function analisisResult(result){
+		var logisticList = result.data;
+		$.each(logisticList,function (index,item) {
+			path.push(new AMap.LngLat(item.latitude,item.longitude));
+		})
 
-	var bezierCurve = new AMap.BezierCurve({
-		path: path,
-		isOutline: true,
-		outlineColor: '#ffeeff',
-		borderWeight: 3,
-		strokeColor: "#3366FF",
-		strokeOpacity: 1,
-		strokeWeight: 6,
-		// 线样式还支持 'dashed'
-		strokeStyle: "solid",
-		// strokeStyle是dashed时有效
-		strokeDasharray: [10, 10],
-		lineJoin: 'round',
-		lineCap: 'round',
-		zIndex: 50,
-	})
+		var map = new AMap.Map("map", {
+			resizeEnable: true,
+			center: [114.93 , 25.83],
+			zoom: 14
+		});
 
-	bezierCurve.setMap(map)
-	// 缩放地图到合适的视野级别
-	map.setFitView([ bezierCurve ])
-
-	var bezierCurveEditor = new AMap.BezierCurveEditor(map, bezierCurve)
-
-	bezierCurveEditor.on('addnode', function(event) {
-		log.info('触发事件：addnode')
-	})
-
-	bezierCurveEditor.on('adjust', function(event) {
-		log.info('触发事件：adjust')
-	})
-
-	bezierCurveEditor.on('removenode', function(event) {
-		log.info('触发事件：removenode')
-	})
-
-	bezierCurveEditor.on('end', function(event) {
-		log.info('触发事件： end')
-		// event.target 即编辑后的曲线对象
-	})
+		// 坐标转换
+		AMap.convertFrom(path, 'gps', function (status, result) {
+			if (result.info === 'ok') {
+				var path2 = result.locations;
+				polyline2 = new AMap.Polyline({
+					path: path2,
+					borderWeight: 2, // 线条宽度，默认为 1
+					strokeColor: "green", // 线条颜色
+					lineJoin: 'round' // 折线拐点连接处样式
+				});
+				map.setFitView([ polyline2 ]);
+				map.add(polyline2);
+				text2 = new AMap.Text({
+					position: result.locations[0],
+					offset: new AMap.Pixel(-20, -20)
+				})
+			}
+		});
+	}
 </script>
 <script type="text/javascript">
 	$(document).on("click","#show_product",function () {

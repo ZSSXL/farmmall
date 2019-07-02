@@ -1,6 +1,7 @@
 package com.fmall.dao;
 
 import com.fmall.pojo.Enviroment;
+import com.fmall.vo.EnviromentVo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
@@ -25,4 +26,6 @@ public interface EnviromentMapper {
     List<Date> getTime(@Param("annimalId")Integer annimalId);
 
     List<Double> getHumidity(@Param("annimalId")Integer annimalId);
+
+    List<EnviromentVo> selectEnviromentSimple(Integer label);
 }

@@ -16,8 +16,7 @@ public interface ILivestockService {
     /**
      * 扫码查询出牲畜信息
      * @param label
-     * @param varieties
      * @return
      */
-    ServerResponse<Livestock> selectLivestockByLabelAndVarieties(Integer label, String varieties);
+    ServerResponse<Livestock> selectLivestockByLabel(Integer label);
 }

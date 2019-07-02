@@ -32,6 +32,10 @@ public class Livestock {
 
     private Date updateTime;
 
+    public Livestock() {
+        super();
+    }
+
     public Livestock(Integer id, Integer label, String varieties, BigDecimal weight, String faces, String stapleFood, String medicalRecord, String health, String vaccine, Integer age, String photo, String origin, Date createTime, Date updateTime) {
         this.id = id;
         this.label = label;
@@ -49,9 +53,24 @@ public class Livestock {
         this.updateTime = updateTime;
     }
 
-    public Livestock(Integer label, String varieties) {
-        this.label = label;
-        this.varieties = varieties;
+    @Override
+    public String toString() {
+        return "Livestock{" +
+                "id=" + id +
+                ", label=" + label +
+                ", varieties='" + varieties + '\'' +
+                ", weight=" + weight +
+                ", faces='" + faces + '\'' +
+                ", stapleFood='" + stapleFood + '\'' +
+                ", medicalRecord='" + medicalRecord + '\'' +
+                ", health='" + health + '\'' +
+                ", vaccine='" + vaccine + '\'' +
+                ", age=" + age +
+                ", photo='" + photo + '\'' +
+                ", origin='" + origin + '\'' +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                '}';
     }
 
     public String getHealth() {
@@ -68,10 +87,6 @@ public class Livestock {
 
     public void setLabel(Integer label) {
         this.label = label;
-    }
-
-    public Livestock() {
-        super();
     }
 
     public Integer getId() {

@@ -24,11 +24,11 @@ public class LivestockServiceImpl implements ILivestockService {
     }
 
     @Override
-    public ServerResponse<Livestock> selectLivestockByLabelAndVarieties(Integer label, String varieties) {
+    public ServerResponse<Livestock> selectLivestockByLabel(Integer label) {
         // 1、查询信息
-        Livestock livestock = livestockMapper.selectLivestockByLabelAndVarieties(label,varieties);
+        Livestock livestock = livestockMapper.selectLivestockByLabel(label);
         if(livestock == null){
-            return ServerResponse.createByErrorMessage("查询出错");
+            return ServerResponse.createByErrorMessage("没有该牲畜信息");
         }
         livestock.setLabel(livestock.getLabel() / 100);
         return ServerResponse.createBySuccess("查询成功",livestock);

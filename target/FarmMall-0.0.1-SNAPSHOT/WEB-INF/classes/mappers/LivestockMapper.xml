@@ -19,7 +19,7 @@
                   <arg column="update_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
             </constructor>
       </resultMap>
-      <resultMap id="BaseResultSimpleMap" type="com.fmall.pojo.Livestock">
+      <resultMap id="BaseResultSimpleMap" type="com.fmall.vo.LivestockSimple">
             <constructor>
                   <arg column="label" javaType="java.lang.Integer" jdbcType="INTEGER" />
                   <arg column="varieties" javaType="java.lang.String" jdbcType="VARCHAR" />
@@ -220,10 +220,17 @@
       </select>
       <select id="selectLivestockByLabelAndVarieties" resultMap="BaseResultMap" parameterType="map">
             select
-            <include refid="Base_Column_List"/>
             from fmall_livestock
             where label = #{label}
             and varieties = #{varieties}
+            order by create_time desc
+            limit 1
+      </select>
+      <select id="selectLivestockByLabel" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+            select
+            <include refid="Base_Column_List"/>
+            from fmall_livestock
+            where `label` = #{label}
             order by create_time desc
             limit 1
       </select>

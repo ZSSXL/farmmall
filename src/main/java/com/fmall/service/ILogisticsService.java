@@ -12,5 +12,5 @@ public interface ILogisticsService {
 
     List<Double> getHumidity(Integer boxId);
 
-    LogisticsSimple selectOne(Integer boxId);
+    List<LogisticsSimple> selectOne(Integer boxId);
 }
