@@ -76,7 +76,7 @@
                                 </c:if>
                                 <c:if test="${sessionScope.currentUser.role == 1}">
                                         <li><a href="${APP_PATH}/jsp/selledbaby.jsp">已卖出的宝贝</a></li>
-                                        <li><a href="${APP_PATH}/jsp/sellingbaby.jsp">出售中的宝贝</a></li>
+                                        <li class="active"><a href="${APP_PATH}/jsp/send.jsp">发货</a></li>
                                         <li><a href="${APP_PATH}/jsp/baby_on.jsp">发布宝贝</a></li>
                                         <li><a href="${APP_PATH}/jsp/baby_off.jsp">下架宝贝</a></li>
                                 </c:if>
@@ -127,7 +127,6 @@
                         <div><span><img src="${APP_PATH}/static/images/free_opening/img4.png" alt="">&nbsp;</span><a href="#"><strong>宝贝管理</strong></a></div>
                         <div style="padding-left: 28px;padding-top: 10px;"><a href="${APP_PATH}/jsp/baby_on.jsp">发布宝贝</a></div>
                         <div style="padding-left: 28px;padding-top: 10px;"><a href="${APP_PATH}/jsp/baby_off.jsp">下架宝贝</a></div>
-                        <div style="padding-left: 28px;padding-top: 10px;"><a href="${APP_PATH}/jsp/sellingbaby.jsp">出售中的宝贝</a></div>
                 </div>
         </div>
         <div class="col-md-10 middle">

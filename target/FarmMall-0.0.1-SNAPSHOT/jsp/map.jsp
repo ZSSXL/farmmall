@@ -28,9 +28,12 @@
 
    $(function () {
         $.ajax({
-            url:"${APP_PATH}/show_enviromen.do",
+            /*url:"${APP_PATH}/show_enviromen.do",
             type:"get",
-            data:"label="+1000101,
+            data:"label="+1000101,*/
+            url:"${APP_PATH}/show_logistic.do",
+            type:"get",
+            data:"boxId="+531651109,
             success:function(result){
                 console.log(result);
                 analysisResult(result);

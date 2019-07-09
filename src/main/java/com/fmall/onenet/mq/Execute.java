@@ -79,8 +79,10 @@ public class Execute extends Thread {
                         o_medical_record = "猪肺疫";
                     } else if (medical_record.equals("03")) {
                         o_medical_record = "猪副伤寒";
-                    } else {
+                    } else if(medical_record.equals("04")){
                         o_medical_record = "猪蛔虫病";
+                    }else{
+                        o_medical_record = "无";
                     }
 
                     if (health.equals("01")) {

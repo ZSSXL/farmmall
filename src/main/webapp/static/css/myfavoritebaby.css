@@ -11,13 +11,13 @@
 }
 .head h3{
 	padding-left: 200px;
-	color: white;	
+	color: white;
 }
 .head a{
 	display: block;
 	color: white;
 	line-height: 60px;
-    width: 100px;
+	width: 100px;
 	height: 60px;
 	text-align: center;
 }
@@ -36,7 +36,7 @@
 	line-height: 30px;
 }
 .box img{
-	width: 230px;
+	width: 280px;
 	height: 180px;
 }
 .box a:hover{

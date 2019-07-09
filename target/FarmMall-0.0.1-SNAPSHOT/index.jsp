@@ -17,6 +17,11 @@
         <title>首页</title>
 </head>
 <body>
+<div class="progress" id="processBox" style="display: none;">
+        <div class="progress-bar progress-bar-success" role="progressbar"
+             aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;" id="progressBar">
+        </div>
+</div>
 <div>
         <ul class="nav nav-tabs">
                 <c:if test="${sessionScope.currentUser == null}">
@@ -57,8 +62,8 @@
                                         <li><a href="${APP_PATH}/jsp/free_opening.jsp">免费开店</a></li>
                                 </c:if>
                                 <c:if test="${sessionScope.currentUser.role == 1}">
-                                        <li><a href="${APP_PATH}/jsp/selledbaby.jsp">已卖出的宝贝</a></li>
-                                        <li><a href="${APP_PATH}/jsp/sellingbaby.jsp">出售中的宝贝</a></li>
+                                        <li><a href="${APP_PATH}/jsp/selledbaby.jsp">订单管理</a></li>
+                                        <li><a href="${APP_PATH}/jsp/send.jsp">发货</a></li>
                                         <li><a href="${APP_PATH}/jsp/baby_on.jsp">发布宝贝</a></li>
                                         <li><a href="${APP_PATH}/jsp/baby_off.jsp">下架宝贝</a></li>
                                 </c:if>
@@ -298,6 +303,27 @@
         showCategory("#categoryArea");
     });
 
+
+    /* 进度条 */
+    var xhr=new XMLHttpRequest();
+        xhr.upload.onprogress=function(e){}
+    var xhrOnProgress=function(fun) {
+        xhrOnProgress.onprogress = fun; //绑定监听
+        //使用闭包实现监听绑
+        return function() {
+            //通过$.ajaxSettings.xhr();获得XMLHttpRequest对象
+            var xhr = $.ajaxSettings.xhr();
+            //判断监听函数是否为函数
+            if (typeof xhrOnProgress.onprogress !== 'function')
+                return xhr;
+            //如果有监听函数并且xhr对象支持绑定时就把监听函数绑定上去
+            if (xhrOnProgress.onprogress && xhr.upload) {
+                xhr.upload.onprogress = xhrOnProgress.onprogress;
+            }
+            return xhr;
+        }
+    }
+
     /**
      * 有选择的展示商品//
      * @param type 展示商品的类型，1是不分类，2是按猪肉种类分类
@@ -311,6 +337,13 @@
             data: "type=" + type + "&pn=" + pn + "&categoryId=" + categoryId,
             type: "GET",
             datatype: "json",
+            xhr:xhrOnProgress(function(e){
+                $("#processBox").removeAttr("style");
+                var per=100 * e.loaded / e.total;//计算百分比
+                var son =  document.getElementById("progressBar");
+                son.innerHTML = per + "%";
+                son.style.width = per + "%";
+            }),
             success: function (result) {
                 //console.log(result);
                 // 1、展示商品信息

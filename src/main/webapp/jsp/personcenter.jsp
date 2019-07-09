@@ -55,8 +55,8 @@
                                         <li><a href="${APP_PATH}/jsp/free_opening.jsp">免费开店</a></li>
                                 </c:if>
                                 <c:if test="${sessionScope.currentUser.role == 1}">
-                                        <li><a href="${APP_PATH}/jsp/selledbaby.jsp">已卖出的宝贝</a></li>
-                                        <li><a href="${APP_PATH}/jsp/sellingbaby.jsp">出售中的宝贝</a></li>
+                                        <li><a href="${APP_PATH}/jsp/selledbaby.jsp">订单管理</a></li>
+                                        <li><a href="${APP_PATH}/jsp/send.jsp">发货</a></li>
                                         <li><a href="${APP_PATH}/jsp/baby_on.jsp">发布宝贝</a></li>
                                         <li><a href="${APP_PATH}/jsp/baby_off.jsp">下架宝贝</a></li>
                                 </c:if>

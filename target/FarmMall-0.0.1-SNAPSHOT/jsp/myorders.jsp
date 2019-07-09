@@ -34,7 +34,7 @@
                         <span class="caret"></span>
                 </a>
                         <ul class="dropdown-menu">
-                                <li><a href="${APP_PATH}/jsp/myorders.jsp">全部订单</a></li>
+                                <li class="active"><a href="${APP_PATH}/jsp/myorders.jsp">全部订单</a></li>
                                 <li><a href="${APP_PATH}/jsp/goods_received.jsp">待收货</a></li>
                         </ul>
                 </li>
@@ -55,8 +55,8 @@
                                         <li><a href="${APP_PATH}/jsp/free_opening.jsp">免费开店</a></li>
                                 </c:if>
                                 <c:if test="${sessionScope.currentUser.role == 1}">
-                                        <li><a href="${APP_PATH}/jsp/selledbaby.jsp">已卖出的宝贝</a></li>
-                                        <li><a href="${APP_PATH}/jsp/sellingbaby.jsp">出售中的宝贝</a></li>
+                                        <li><a href="${APP_PATH}/jsp/selledbaby.jsp">订单管理</a></li>
+                                        <li><a href="${APP_PATH}/jsp/send.jsp">发货</a></li>
                                         <li><a href="${APP_PATH}/jsp/baby_on.jsp">发布宝贝</a></li>
                                         <li><a href="">下架宝贝</a></li>
                                 </c:if>
@@ -69,7 +69,7 @@
                         </a>
                         <ul class="dropdown-menu">
                                 <li><a href="${APP_PATH}/jsp/personcenter.jsp">地址管理</a></li>
-                                <li class="active"><a href="${APP_PATH}/jsp/modifypsw.jsp">修改密码</a></li>
+                                <li><a href="${APP_PATH}/jsp/modifypsw.jsp">修改密码</a></li>
                         </ul>
                 </li>
         </ul>

@@ -23,7 +23,7 @@ body{
 }
 .head h3{
 	margin-left: 20px;
-	color: white;	
+	color: white;
 }
 .box{
 	width: 1200px;
@@ -46,7 +46,7 @@ body{
 	background:linear-gradient(rgba(236,228,121,1.00),rgba(212,209,174,1.00));
 }
 .rig div a{
-	text-decoration: none;	
+	text-decoration: none;
 }
 .rig div a:hover{
 	text-decoration: none;
@@ -56,6 +56,25 @@ body{
 	height: 250px;
 }
 .relation{
-	height: 200px;
+	height: 250px;
 	border: solid black 1px;
+}
+
+/*.freshbox{
+	!*height: 500px;*!
+	width: 878px;
+	!*border: 1px solid black;*!
+}*/
+#map{
+	/*width: 1200px;*/
+	height: 600px;
+	border: 1px solid black;
+	margin-top: 20px;
+}
+
+.enviroment_box{
+	padding: 10px;
+}
+.enviroment_box p{
+	margin-left: 50px;
 }

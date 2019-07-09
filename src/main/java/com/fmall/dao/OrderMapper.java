@@ -23,11 +23,11 @@ public interface OrderMapper {
 
     List<OrderItemVo> showOrdersByUserId(@Param("userId") Integer userId,@Param("status") Integer status);
 
-    int selectExist(@Param("userId") Integer userId,@Param("orderNo") Long orderNo);
+    Integer selectExist(@Param("userId") Integer userId,@Param("orderNo") Long orderNo);
 
     int updateStatusByOrderNo(@Param("status") Integer status,@Param("orderNo") Long orderNo);
 
-    int checkedShippingId(Long orderNo);
+    Integer checkedShippingId(Long orderNo);
 
     int deleteOrderBySeller(Long orderNo);
 

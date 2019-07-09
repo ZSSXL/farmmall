@@ -178,6 +178,7 @@ public class OrderController {
         }
         // 1、去查询
         OrderItemShippingVo orderItemShippingVo = iOrderService.selectOrderDetail(user.getId(), orderNo);
+        System.out.println(orderItemShippingVo);
         if(orderItemShippingVo == null){
             return ServerResponse.createByErrorMessage("杀一个程序猿猴祭天");
         }

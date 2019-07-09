@@ -23,10 +23,10 @@ public class EcharController {
     @Autowired
     private IEnviromentService iEnviromentService;
 
-    @RequestMapping(value = "/echar.do",method = RequestMethod.GET)
+    @RequestMapping(value = "/echar.do", method = RequestMethod.GET)
     @ResponseBody
-    public Map<String,Object> echarShow(@RequestParam(value = "boxId",defaultValue = "531651109") Integer boxId){
-        Map<String,Object> map = new HashMap<>();
+    public Map<String, Object> echarShow(@RequestParam(value = "boxId", defaultValue = "531651109") Integer boxId) {
+        Map<String, Object> map = new HashMap<>();
         List<Double> temperature = logisticsService.getTemperature(boxId);
         List<Date> time = logisticsService.getTime(boxId);
         List<Double> humidity = logisticsService.getHumidity(boxId);
@@ -37,30 +37,31 @@ public class EcharController {
         for (Date date : time) {
             s_time.add(DateFormat.dataToString(date));
         }
-        map.put("temperature",temperature);
-        map.put("time",s_time);
-        map.put("humidity",humidity);
+        map.put("temperature", temperature);
+        map.put("time", s_time);
+        map.put("humidity", humidity);
         return map;
     }
 
-    @RequestMapping(value = "/show_logistic.do",method = RequestMethod.GET)
+    @RequestMapping(value = "/show_logistic.do", method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<List<LogisticsSimple>> mapShow(Integer boxId){
+    public ServerResponse<List<LogisticsSimple>> mapShow(Integer boxId) {
         List<LogisticsSimple> logisticsSimpleList = logisticsService.selectOne(boxId);
-        if(logisticsSimpleList == null){
+        if (logisticsSimpleList == null) {
             return ServerResponse.createByErrorMessage("查询失败");
         }
         return ServerResponse.createBySuccess(logisticsSimpleList);
     }
 
 
-    @RequestMapping(value = "/enviroment.do",method = RequestMethod.GET)
+    @RequestMapping(value = "/enviroment.do", method = RequestMethod.GET)
     @ResponseBody
-    public Map<String,Object> enviromentShow(@RequestParam(value = "annimalId") Integer annimalId){
-        Map<String,Object> map = new HashMap<>();
+    public Map<String, Object> enviromentShow(@RequestParam(value = "annimalId") Integer annimalId) {
+        Map<String, Object> map = new HashMap<>();
         List<Double> temperature = iEnviromentService.getTemperature(annimalId);
         List<Date> time = iEnviromentService.getTime(annimalId);
         List<Double> humidity = iEnviromentService.getHumidity(annimalId);
+
         Collections.reverse(time);
         Collections.reverse(temperature);
         Collections.reverse(humidity);
@@ -68,15 +69,15 @@ public class EcharController {
         for (Date date : time) {
             s_time.add(DateFormat.dataToString(date));
         }
-        map.put("temperature",temperature);
-        map.put("time",s_time);
-        map.put("humidity",humidity);
+        map.put("temperature", temperature);
+        map.put("time", s_time);
+        map.put("humidity", humidity);
         return map;
     }
 
-    @RequestMapping(value = "show_enviromen.do",method = RequestMethod.GET)
+    @RequestMapping(value = "show_enviroment.do", method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<List<EnviromentVo>> showEnvironment(Integer label){
+    public ServerResponse<List<EnviromentVo>> showEnvironment(Integer label) {
         ServerResponse<List<EnviromentVo>> serverResponse = iEnviromentService.selectEnviromentSimple(label);
         return serverResponse;
     }

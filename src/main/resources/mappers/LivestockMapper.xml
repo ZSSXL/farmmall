@@ -206,7 +206,7 @@
             where id = #{id,jdbcType=INTEGER}
       </update>
       <select id="getAllLivestock" resultMap="BaseResultSimpleMap">
-            select label,varieties
+            select distinct label,varieties
             from fmall_livestock
       </select>
       <select id="selectByLabel" parameterType="java.lang.Integer" resultMap="BaseResultMap">

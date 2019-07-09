@@ -15,6 +15,11 @@
         <script type="text/javascript" src="${APP_PATH}/static/bootstrap3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
+<div class="progress" id="processBox" style="display: none;">
+        <div class="progress-bar progress-bar-success" role="progressbar"
+             aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;" id="progressBar">
+        </div>
+</div>
 <div>
         <ul class="nav nav-tabs">
                 <c:if test="${sessionScope.currentUser == null}">
@@ -54,9 +59,9 @@
                                         <li><a href="${APP_PATH}/jsp/free_opening.jsp">免费开店</a></li>
                                 </c:if>
                                 <c:if test="${sessionScope.currentUser.role == 1}">
-                                        <li><a href="${APP_PATH}/jsp/selledbaby.jsp">已卖出的宝贝</a></li>
-                                        <li><a href="${APP_PATH}/jsp/sellingbaby.jsp">出售中的宝贝</a></li>
-                                        <li><a href="${APP_PATH}/jsp/baby_on.jsp">发布宝贝</a></li>
+                                        <li><a href="${APP_PATH}/jsp/selledbaby.jsp">订单管理</a></li>
+                                        <li><a href="${APP_PATH}/jsp/send.jsp">发货</a></li>
+                                        <li class="active"><a href="${APP_PATH}/jsp/baby_on.jsp">发布宝贝</a></li>
                                         <li><a href="${APP_PATH}/jsp/baby_off.jsp">下架宝贝</a></li>
                                 </c:if>
                         </ul>
@@ -68,7 +73,7 @@
                         </a>
                         <ul class="dropdown-menu">
                                 <li><a href="${APP_PATH}/jsp/personcenter.jsp">地址管理</a></li>
-                                <li class="active"><a href="${APP_PATH}/jsp/modifypsw.jsp">修改密码</a></li>
+                                <li><a href="${APP_PATH}/jsp/modifypsw.jsp">修改密码</a></li>
                         </ul>
                 </li>
         </ul>
@@ -106,7 +111,6 @@
                         <div><span><img src="${APP_PATH}/static/images/free_opening/img4.png" alt="">&nbsp;</span><a href="#"><strong>宝贝管理</strong></a></div>
                         <div style="padding-left: 28px;padding-top: 10px;"><a href="${APP_PATH}/jsp/baby_on.jsp" style="color: rgba(236,82,60,1.00);">发布宝贝</a></div>
                         <div style="padding-left: 28px;padding-top: 10px;"><a href="${APP_PATH}/jsp/baby_off.jsp">下架宝贝</a></div>
-                        <div style="padding-left: 28px;padding-top: 10px;"><a href="${APP_PATH}/jsp/sellingbaby.jsp">出售中的宝贝</a></div>
                 </div>
         </div>
         <div class="col-md-10 middle">
@@ -362,6 +366,26 @@
             });
         }
 
+
+    /* 进度条 */
+    var xhr=new XMLHttpRequest(); xhr.upload.onprogress=function(e){}
+    var xhrOnProgress=function(fun) {
+        xhrOnProgress.onprogress = fun; //绑定监听
+        //使用闭包实现监听绑
+        return function() {
+            //通过$.ajaxSettings.xhr();获得XMLHttpRequest对象
+            var xhr = $.ajaxSettings.xhr();
+            //判断监听函数是否为函数
+            if (typeof xhrOnProgress.onprogress !== 'function')
+                return xhr;
+            //如果有监听函数并且xhr对象支持绑定时就把监听函数绑定上去
+            if (xhrOnProgress.onprogress && xhr.upload) {
+                xhr.upload.onprogress = xhrOnProgress.onprogress;
+            }
+            return xhr;
+        }
+    }
+
         var click = $("#uploadBtn").click(function(){
 
             var categoryId = $("#categoryName").val();
@@ -397,8 +421,15 @@
                 dataType:"json",
                 mimeType:"multipart/form-data",
                 data:fd,
+                xhr:xhrOnProgress(function(e){
+                    $("#processBox").removeAttr("style");
+                    var per=100 * e.loaded / e.total;//计算百分比
+                    var son =  document.getElementById("progressBar");
+                    son.innerHTML = per + "%";
+                    son.style.width = per + "%";
+                }),
                 success:function(result){
-                    console.log(result);
+                    // console.log(result);
                     if(result.status == 0){
                         alert(result.msg);
                         window.location.reload();
@@ -407,7 +438,6 @@
                     }
                 }
             });
-            // alert("wait");
         });
 
     $("#logout").click(function () {

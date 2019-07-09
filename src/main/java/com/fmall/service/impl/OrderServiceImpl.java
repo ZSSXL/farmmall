@@ -109,13 +109,13 @@ public class OrderServiceImpl implements IOrderService {
 
     public ServerResponse<String> pay(Integer userId,Long orderNo){
         // 1、查看是否有这个订单
-        int resultCount = orderMapper.selectExist(userId,orderNo);
+        Integer resultCount = orderMapper.selectExist(userId,orderNo);
         if(resultCount == 0){
             return ServerResponse.createByErrorMessage("没有这个订单，找程序员解决，出BUG了");
         }
         // 2、绑定收货地址
         resultCount = orderMapper.checkedShippingId(orderNo);
-        if(resultCount == 1){
+        if(resultCount == null){
             return ServerResponse.createByErrorMessage("该订单没有绑定收货地址，请删除该订单重新下单");
         }
 

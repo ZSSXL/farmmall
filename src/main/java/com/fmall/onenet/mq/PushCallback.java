@@ -12,7 +12,6 @@ import java.util.logging.Logger;
 
 public class PushCallback implements MqttCallback {
 
-
     private IMqttAsyncClient Client;
     private static final Logger logger = Logger.getLogger(PushCallback.class.getCanonicalName());
     private MqClient mqClient;
@@ -47,15 +46,10 @@ public class PushCallback implements MqttCallback {
         OnenetMq.Msg obj = OnenetMq.Msg.parseFrom(payload);
         logger.info("msg id: " + obj.getMsgid() + ", body: " + new String(obj.getData().toByteArray()));
         Queue.put(JSONObject.parseObject(new String(obj.getData().toByteArray())));
-
-
     }
-
 
     @Override
     public void deliveryComplete(IMqttDeliveryToken token) {
         Client = token.getClient();
     }
-
-
 }

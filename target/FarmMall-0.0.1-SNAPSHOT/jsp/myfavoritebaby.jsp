@@ -55,10 +55,10 @@
                                         <li><a href="${APP_PATH}/jsp/free_opening.jsp">免费开店</a></li>
                                 </c:if>
                                 <c:if test="${sessionScope.currentUser.role == 1}">
-                                        <li><a href="${APP_PATH}/jsp/selledbaby.jsp">已卖出的宝贝</a></li>
-                                        <li><a href="${APP_PATH}/jsp/sellingbaby.jsp">出售中的宝贝</a></li>
+                                        <li><a href="${APP_PATH}/jsp/selledbaby.jsp">订单管理</a></li>
+                                        <li><a href="${APP_PATH}/jsp/send.jsp">发货</a></li>
                                         <li><a href="${APP_PATH}/jsp/baby_on.jsp">发布宝贝</a></li>
-                                        <li><a href="">下架宝贝</a></li>
+                                        <li><a href="${APP_PATH}/jsp/baby_off.jsp">下架宝贝</a></li>
                                 </c:if>
                         </ul>
                 </li>
@@ -181,8 +181,8 @@
             var collectionList = result.data.list;
             $.each(collectionList,function (index,collectionItem) {
                 var imageLine = $("<a href='#'></a>").append($("<img alt='#' class='img-thumbnail'/>").attr("src",collectionItem.mainImage));
-                var enterShopLine = $("<div></div>").append($("<a href='#' class='show_product' style='margin-right: 90px;'></a>").append(collectionItem.name).attr("product_id",collectionItem.id))
-                    .append($("<button class='btn btn-danger'>删除宝贝</button>").attr("product_id",collectionItem.id));
+                var enterShopLine = $("<div></div>").append($("<a href='#' class='show_product'></a>").append(collectionItem.name).attr("product_id",collectionItem.id))
+                    .append($("<button class='btn btn-danger' style='float: right;'>删除宝贝</button>").attr("product_id",collectionItem.id));
                 var detatil = $("<a href='#'></a>").append(collectionItem.detail);
                 var detailLine = $("<div></div>").append(detatil);
                 var priceLine = $("<div></div>").append($("<strong>￥</strong>").append(collectionItem.price));

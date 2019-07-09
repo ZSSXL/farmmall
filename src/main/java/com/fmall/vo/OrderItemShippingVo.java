@@ -4,6 +4,10 @@ import java.math.BigDecimal;
 
 public class OrderItemShippingVo {
 
+    private String receiverName;
+
+    private String receiverPhone;
+
     private String receiverProvince;
 
     private String receiverCity;
@@ -30,7 +34,9 @@ public class OrderItemShippingVo {
         super();
     }
 
-    public OrderItemShippingVo(String receiverProvince, String receiverCity, String receiverDistrict, String receiverAddress, Integer productId, String productName, String productImage, BigDecimal currentUnitPrice, Integer quantity, Integer boxId, Long orderNo) {
+    public OrderItemShippingVo(String receiverName, String receiverPhone, String receiverProvince, String receiverCity, String receiverDistrict, String receiverAddress, Integer productId, String productName, String productImage, BigDecimal currentUnitPrice, Integer quantity, Integer boxId, Long orderNo) {
+        this.receiverName = receiverName;
+        this.receiverPhone = receiverPhone;
         this.receiverProvince = receiverProvince;
         this.receiverCity = receiverCity;
         this.receiverDistrict = receiverDistrict;
@@ -47,7 +53,9 @@ public class OrderItemShippingVo {
     @Override
     public String toString() {
         return "OrderItemShippingVo{" +
-                "receiverProvince='" + receiverProvince + '\'' +
+                "receiverName='" + receiverName + '\'' +
+                ", receiverPhone='" + receiverPhone + '\'' +
+                ", receiverProvince='" + receiverProvince + '\'' +
                 ", receiverCity='" + receiverCity + '\'' +
                 ", receiverDistrict='" + receiverDistrict + '\'' +
                 ", receiverAddress='" + receiverAddress + '\'' +
@@ -59,6 +67,22 @@ public class OrderItemShippingVo {
                 ", boxId=" + boxId +
                 ", orderNo=" + orderNo +
                 '}';
+    }
+
+    public String getReceiverName() {
+        return receiverName;
+    }
+
+    public void setReceiverName(String receiverName) {
+        this.receiverName = receiverName;
+    }
+
+    public String getReceiverPhone() {
+        return receiverPhone;
+    }
+
+    public void setReceiverPhone(String receiverPhone) {
+        this.receiverPhone = receiverPhone;
     }
 
     public Long getOrderNo() {

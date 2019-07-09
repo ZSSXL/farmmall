@@ -32,6 +32,8 @@
   </resultMap>
   <resultMap id="BaseOrderItemShippingVo" type="com.fmall.vo.OrderItemShippingVo">
     <constructor>
+      <arg column="receiver_name" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="receiver_phone" javaType="java.lang.String" jdbcType="VARCHAR" />
       <arg column="receiver_province" javaType="java.lang.String" jdbcType="VARCHAR" />
       <arg column="receiver_city" javaType="java.lang.String" jdbcType="VARCHAR" />
       <arg column="receiver_district" javaType="java.lang.String" jdbcType="VARCHAR" />
@@ -54,7 +56,7 @@
     foi.quantity, foi.total_price, fu.username, fo.status
   </sql>
   <sql id="Base_Column_OIS_list">
-    fs.receiver_province,fs.receiver_city,fs.receiver_district,fs.receiver_address
+    fs.receiver_name,fs.receiver_phone,fs.receiver_province,fs.receiver_city,fs.receiver_district,fs.receiver_address
 	,foi.product_id,foi.product_name,foi.product_image,foi.current_unit_price,foi.quantity,fo.box_id,foi.order_no
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
