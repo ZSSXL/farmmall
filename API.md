@@ -1,7 +1,7 @@
 ﻿# 农场品在线销售系统接口文档
 -----
 
-**BaseUrl:10.169.30.123:8080**
+**BaseUrl:zssxl.natapp1.com/farmmall**
 
 ----
 
