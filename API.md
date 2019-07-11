@@ -1,7 +1,7 @@
 ﻿# 农场品在线销售系统接口文档
 -----
 
-**BaseUrl:zssxl.natapp1.com/farmmall**
+**BaseUrl:zssxl.natapp1.cc/farmmall**
 
 ----
 
