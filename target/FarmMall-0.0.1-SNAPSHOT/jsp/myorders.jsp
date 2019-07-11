@@ -18,6 +18,29 @@
 </head>
 
 <body>
+<div class="modal fade" tabindex="-1" role="dialog" id="payQrModal">
+        <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                        <div class="modal-header">
+                                <button id="close_pay_qr_x" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title">请用支付宝扫码支付</h4>
+                        </div>
+                        <div class="modal-body" style="text-align: center">
+                                <img id="qr_img" style="width: 256px;height: 256px;"/>
+                                <div>
+                                        <div class="input-group input-group-lg">
+                                                <span class="input-group-addon">
+                                                        <strong id="totalPriceToPay"></strong>
+                                                </span>
+                                        </div>
+                                </div>
+                        </div>
+                        <div class="modal-footer">
+                                <button id="close_pay_qr" type="button" class="btn btn-info" data-dismiss="modal">关闭付款</button>
+                        </div>
+                </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 <div>
         <ul class="nav nav-tabs">
                 <c:if test="${sessionScope.currentUser == null}">
@@ -138,6 +161,10 @@
 </footer>
 <script type="text/javascript">
 
+        var globalOrder = 1;
+
+        var interval;
+
         $("#un_pay").click(function () {
                 var status = 10;
                 var pn = 1;
@@ -178,22 +205,49 @@
         }
 
         $(document).on("click",".pay-btn",function () {
-           var orderId = $(this).prev("button").attr("order_no");
-           //alert(orderId);
+            globalOrder = $(this).prev("button").attr("order_no");
+            var totalPrice = $(this).parents("tr").find("td:eq(4)").text();
+            $("#totalPriceToPay").html(totalPrice+" 元");
             $.ajax({
                 url:"${APP_PATH}/order/pay.do",
-                type:"POST",
-                data:"orderNo="+orderId,
+                type:"GET",
+                data:"orderNo="+globalOrder,
                 success:function(result){
                     console.log(result);
-                    if(result.status == 0){
-                        alert(result.msg);
+                    analysisResult(result);
+                }
+            });
+        });
+
+        function analysisResult(result){
+            $("#qr_img").attr("src",result.data.qrUrl);
+            $("#payQrModal").modal("show");
+            // 轮询查询订单状态
+            interval = setInterval("getResult()",2000);
+        }
+
+        function getResult(){
+            $.ajax({
+                url:"${APP_PATH}/order/query_order_pay_status.do",
+                async:true,
+                type:"POST",
+                data:"orderNo="+globalOrder,
+                success:function (result) {
+                    // console.log(result);
+                    if(result.data == true){
+                        alert("付款成功");
                         window.location.reload();
-                    }else{
-                        alert(result.msg);
                     }
                 }
             });
+        }
+
+        $("#close_pay_qr").click(function () {
+            clearInterval(interval);
+        });
+
+        $("#close_pay_qr_x").click(function () {
+            clearInterval(interval);
         });
 
         $(function () {

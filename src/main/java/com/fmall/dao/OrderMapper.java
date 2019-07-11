@@ -23,7 +23,7 @@ public interface OrderMapper {
 
     List<OrderItemVo> showOrdersByUserId(@Param("userId") Integer userId,@Param("status") Integer status);
 
-    Integer selectExist(@Param("userId") Integer userId,@Param("orderNo") Long orderNo);
+    Order selectExist(@Param("userId") Integer userId,@Param("orderNo") Long orderNo);
 
     int updateStatusByOrderNo(@Param("status") Integer status,@Param("orderNo") Long orderNo);
 
@@ -38,4 +38,6 @@ public interface OrderMapper {
     List<Order> queryOrdersByOrderNo(@Param("orderNo") Long orderNo);
 
     void deleteOrderById(@Param("orderNo")String id);
+
+    Order selectByOrderNo(Long orderNo);
 }

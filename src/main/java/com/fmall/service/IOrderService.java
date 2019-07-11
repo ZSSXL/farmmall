@@ -7,6 +7,7 @@ import com.fmall.vo.ProductIdAndQuantiry;
 import com.github.pagehelper.PageInfo;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IOrderService {
 
@@ -42,7 +43,22 @@ public interface IOrderService {
      * @param orderNo
      * @return
      */
-    ServerResponse<String> pay(Integer userId,Long orderNo);
+    ServerResponse pay(Integer userId,Long orderNo,String path);
+
+    /**
+     * 支付宝回调接口的实现
+     * @param params
+     * @return
+     */
+    ServerResponse alipayCallback(Map<String,String> params);
+
+    /**
+     * 轮询
+     * @param userId
+     * @param orderNo
+     * @return
+     */
+    ServerResponse queryOrderPayStatus(Integer userId,Long orderNo);
 
     /**
      * 查看个人购物车中已勾选的商品

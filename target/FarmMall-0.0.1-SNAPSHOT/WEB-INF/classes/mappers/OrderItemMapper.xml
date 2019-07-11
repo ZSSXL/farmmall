@@ -239,4 +239,11 @@
     select product_id from fmall_order_item
       where order_no =#{orderNo}
   </select>
+  <select id="getByOrderNoUserId" resultMap="BaseResultMap" parameterType="map">
+    select
+    <include refid="Base_Column_List"/>
+    from fmall_order_item
+    where order_no = #{orderNo}
+    and user_id = #{userId}
+  </select>
 </mapper>

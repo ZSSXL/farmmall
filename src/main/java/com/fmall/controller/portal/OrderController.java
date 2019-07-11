@@ -1,5 +1,8 @@
 package com.fmall.controller.portal;
 
+import com.alipay.api.AlipayApiException;
+import com.alipay.api.internal.util.AlipaySignature;
+import com.alipay.demo.trade.config.Configs;
 import com.fmall.common.Const;
 import com.fmall.common.ResponseCode;
 import com.fmall.common.ServerResponse;
@@ -9,6 +12,9 @@ import com.fmall.service.IOrderService;
 import com.fmall.vo.OrderItemShippingVo;
 import com.fmall.vo.ProductIdAndQuantiry;
 import com.github.pagehelper.PageInfo;
+import com.google.common.collect.Maps;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,12 +22,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/order/")
 public class OrderController {
+
+    private static final Logger logger = LoggerFactory.getLogger(OrderController.class);
 
     @Autowired
     private IOrderService iOrderService;
@@ -148,19 +159,75 @@ public class OrderController {
     }
 
     /**
-     * 支付
+     * 支付接口
      * @param session
+     * @param request
      * @param orderNo
      * @return
      */
-    @RequestMapping(value = "pay.do",method = RequestMethod.POST)
+    @RequestMapping(value = "pay.do",method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<String> pay(HttpSession session,Long orderNo){
+    public ServerResponse pay(HttpSession session, HttpServletRequest request,Long orderNo){
         User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if(user == null){
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
+        }
+        String path = request.getSession().getServletContext().getRealPath("upload");
         // 更新order表的收货地址
         // 更新订单状态
-        ServerResponse<String> serverResponse = iOrderService.pay(user.getId(), orderNo);
+        ServerResponse serverResponse = iOrderService.pay(user.getId(), orderNo,path);
         return serverResponse;
+    }
+
+    @RequestMapping("alipay_callback.do")
+    @ResponseBody
+    public Object alipayCallback(HttpServletRequest request){
+        Map<String,String> params = Maps.newHashMap();
+        Map requestParams = request.getParameterMap();
+        for(Iterator iter = requestParams.keySet().iterator();iter.hasNext();){
+            String name = (String) iter.next();
+            String[] values = (String[]) requestParams.get(name);
+            String valueStr = "";
+            for(int i = 0;i < values.length;i++){
+                valueStr = (i == values.length - 1) ? valueStr + values[i] : valueStr + values[i] + ",";
+            }
+            params.put(name,valueStr);
+        }
+        System.out.println("支付宝回调,参数："+params);
+        logger.info("支付宝回调，sign:{},trade_status:{},参数:{}",params.get("sign"),params.get("trade_status"),params.toString());
+
+        // Important 验证回调的重要性，是不是支付宝发的，并且还有避免重复通知。
+        params.remove("sign_type");
+        try {
+            boolean alipayRSACheckedV2 = AlipaySignature.rsaCheckV2(params, Configs.getAlipayPublicKey(),"utf-8",Configs.getSignType());
+            if(!alipayRSACheckedV2){
+                return ServerResponse.createByErrorMessage("非法请求，验证不通过，再恶意请求就找网警了");
+            }
+        } catch (AlipayApiException e) {
+            logger.error("支付宝回调异常：",e);
+            e.printStackTrace();
+        }
+        // todo 验证各种数据
+
+        ServerResponse serverResponse = iOrderService.alipayCallback(params);
+        if(serverResponse.isSuccess()){
+            return Const.AlipayCallback.RESPONSE_SUCCESS;
+        }
+        return Const.AlipayCallback.RESPONSE_FAILED;
+    }
+
+    @RequestMapping(value = "query_order_pay_status.do",method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse<Boolean> queryOrderPayStatus(HttpSession session, Long orderNo){
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if(user == null){
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
+        }
+        ServerResponse serverResponse = iOrderService.queryOrderPayStatus(user.getId(), orderNo);
+        if(serverResponse.isSuccess()){
+            return ServerResponse.createBySuccess(true);
+        }
+        return ServerResponse.createBySuccess(false);
     }
 
     /**

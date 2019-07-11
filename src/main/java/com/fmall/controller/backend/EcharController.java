@@ -35,7 +35,7 @@ public class EcharController {
         Collections.reverse(humidity);
         List<String> s_time = new ArrayList<>();
         for (Date date : time) {
-            s_time.add(DateFormat.dataToString(date));
+            s_time.add(DateFormat.dateToString(date));
         }
         map.put("temperature", temperature);
         map.put("time", s_time);
@@ -67,7 +67,7 @@ public class EcharController {
         Collections.reverse(humidity);
         List<String> s_time = new ArrayList<>();
         for (Date date : time) {
-            s_time.add(DateFormat.dataToString(date));
+            s_time.add(DateFormat.dateToString(date));
         }
         map.put("temperature", temperature);
         map.put("time", s_time);

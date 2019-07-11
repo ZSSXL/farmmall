@@ -141,7 +141,7 @@
                 </tbody>
         </table>
         <%--<h3><strong>生长环境温湿度：</strong></h3>--%>
-        <h3><strong>保险箱温湿度：</strong></h3>
+        <h3><strong>保鲜箱温湿度：</strong></h3>
         <div class="freshbox">
                 <div class="row" style="margin-bottom: 10px;">
                         <div class="col-md-12">

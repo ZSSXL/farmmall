@@ -29,4 +29,6 @@ public interface OrderItemMapper {
     OrderItemShippingVo selectByOrderNo(@Param("userId")Integer userId,@Param("orderNo")Long orderNo);
 
     int queryByOrderNo(@Param("orderNo") Long orderNo);
+
+    List<OrderItem> getByOrderNoUserId(@Param("userId")Integer userId,@Param("orderNo")Long orderNo);
 }

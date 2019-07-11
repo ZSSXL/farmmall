@@ -245,8 +245,9 @@
     </if>
     and o.user_id = #{userId}
   </select>
-  <select id="selectExist" parameterType="map" resultType="java.lang.Integer">
-        select count(1)
+  <select id="selectExist" parameterType="map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
         from fmall_order
         where user_id = #{userId}
         and order_no = #{orderNo}
@@ -281,7 +282,14 @@
   <update id="updateBoxIdAndStatusByOrderNo" parameterType="map">
     update fmall_order
     set box_id = #{boxId},
-        status = #{status}
+        status = #{status},
+        send_time = now()
     where order_no = #{orderNo}
   </update>
+  <select id="selectByOrderNo" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from fmall_order
+    where order_no = #{orderNo}
+  </select>
 </mapper>

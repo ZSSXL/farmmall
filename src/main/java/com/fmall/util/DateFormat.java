@@ -1,6 +1,8 @@
 package com.fmall.util;
 
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.util.Date;
 
@@ -32,9 +34,16 @@ public class DateFormat {
         return dateTime.toString(STANARD_RORMAT_DETAIL);
     }
 
-    public static String dataToString(Date date){
+    public static String dateToString(Date date){
         DateTime dateTime = new DateTime(date);
         return dateTime.toString(STANARD_RORMAT_DETAIL);
+    }
+
+    // 字符串类型转为Date类型
+    public static Date strToDate(String dateTimeStr){
+        DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern(STANARD_RORMAT_DETAIL);
+        DateTime dateTime = dateTimeFormatter.parseDateTime(dateTimeStr);
+        return dateTime.toDate();
     }
 
     public static void main(String[] args) {
