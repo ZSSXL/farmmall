@@ -213,7 +213,7 @@
                 type:"GET",
                 data:"orderNo="+globalOrder,
                 success:function(result){
-                    console.log(result);
+                    // console.log(result);
                     analysisResult(result);
                 }
             });

@@ -3,6 +3,8 @@
 
 **BaseUrl:zssxl.natapp1.cc/farmmall**
 
+**Url In Aliyun:47.111.134.50:8000/farmmall**
+
 ----
 
 ## 返回结果状态码枚举 **ResponseBody**
