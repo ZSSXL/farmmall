@@ -38,5 +38,4 @@ public class OrderItem {
     private Date createTime;
 
     private Date updateTime;
-
 }

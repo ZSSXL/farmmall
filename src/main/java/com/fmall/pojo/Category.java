@@ -1,20 +1,12 @@
 package com.fmall.pojo;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Date;
 
-/**
- * @author ZSS
- * @description 分类实体
- */
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@AllArgsConstructor
 public class Category {
     private Integer id;
 

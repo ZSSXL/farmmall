@@ -215,7 +215,7 @@ public class OrderServiceImpl implements IOrderService {
                 // 细节
                 String qrPath = String.format(path+"/qr-%s.png", response.getOutTradeNo());
                 String qrFileName = String.format("qr-%s.png",response.getOutTradeNo());
-                ZxingUtils.getQRCodeImge(response.getQrCode(), 256, qrPath);
+                File qrCodeImge = ZxingUtils.getQRCodeImge(response.getQrCode(), 256, qrPath);
 
                 File targetFile = new File(path,qrFileName);
                 try {
