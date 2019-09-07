@@ -3,7 +3,6 @@ package com.fmall.controller.portal;
 import com.fmall.common.Const;
 import com.fmall.common.ResponseCode;
 import com.fmall.common.ServerResponse;
-import com.fmall.dao.UserMapper;
 import com.fmall.pojo.User;
 import com.fmall.service.IUserService;
 import org.apache.commons.lang3.StringUtils;
@@ -14,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
-// localhost:8888/fmall/user/register.do
+
 @Controller
 @RequestMapping("/user/")
 public class UserController {

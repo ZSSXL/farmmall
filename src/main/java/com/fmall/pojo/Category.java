@@ -1,7 +1,20 @@
 package com.fmall.pojo;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.Date;
 
+/**
+ * @author ZSS
+ * @description 分类实体
+ */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class Category {
     private Integer id;
 
@@ -10,52 +23,4 @@ public class Category {
     private Date createTime;
 
     private Date updateTime;
-
-    public Category(Integer id, String name, Date createTime, Date updateTime) {
-        this.id = id;
-        this.name = name;
-        this.createTime = createTime;
-        this.updateTime = updateTime;
-    }
-
-    public Category(Integer id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
-    public Category() {
-        super();
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name == null ? null : name.trim();
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
 }

@@ -1,20 +1,24 @@
 package com.fmall.common;
 
 /**
- * 枚举类
+ * @author ZSS
+ * @description 枚举类
  */
-
 public enum ResponseCode {
 
-    SUCCESS(0,"SUCCESS"),
-    ERROR(1,"ERROR"),
-    NEED_LOGIN(10,"NEED_LOGIN"),
-    ILLEGAL_ARGUMENT(2,"ILLEGAL_ARGUMENT");
+    // 成功
+    SUCCESS(0, "SUCCESS"),
+    // 失败
+    ERROR(1, "ERROR"),
+    // 未登录
+    NEED_LOGIN(10, "NEED_LOGIN"),
+    // 权限失败
+    ILLEGAL_ARGUMENT(2, "ILLEGAL_ARGUMENT");
 
     private final int code;
     private final String desc;
 
-    ResponseCode(int code,String desc){
+    ResponseCode(int code, String desc) {
         this.code = code;
         this.desc = desc;
     }

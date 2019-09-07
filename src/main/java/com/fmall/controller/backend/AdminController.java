@@ -19,19 +19,27 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
+/**
+ * @author ZSS
+ * @description admin controller
+ */
 @Controller
 @RequestMapping("/manage")
 public class AdminController {
+
+    private final IUserService userService;
+    private final IOrderService orderService;
+    private final IProductService productService;
+
     @Autowired
-    private IUserService userService;
-    @Autowired
-    private IOrderService orderService;
-    @Autowired
-    private IProductService productService;
+    public AdminController(IUserService userService, IOrderService orderService, IProductService productService) {
+        this.userService = userService;
+        this.orderService = orderService;
+        this.productService = productService;
+    }
 
     @RequestMapping("/admin.do")
     public String login() {
-
         return "manage/login";
     }
 
@@ -39,14 +47,12 @@ public class AdminController {
     @ResponseBody
     public ServerResponse<User> doAjaxLogin(User user, HttpSession session) {
         User buyer = userService.doAjaxLogin(user);
-
         if (buyer == null) {
             return ServerResponse.createByError();
         } else {
             session.setAttribute("loginUser", buyer);
             return ServerResponse.createBySuccess(buyer);
         }
-
     }
 
     @RequestMapping("/logout.do")
@@ -97,15 +103,15 @@ public class AdminController {
 
     @RequestMapping("/queryAllOrders.do")
     @ResponseBody
-    public ModelAndView queryAllOrders(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size,@RequestParam(value = "username",required = false)Long orderNo ) {
+    public ModelAndView queryAllOrders(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(value = "username", required = false) Long orderNo) {
         ModelAndView mv = new ModelAndView();
-        if (orderNo==null){
+        if (orderNo == null) {
             List<Order> ordersList = orderService.queryAllOrders(page, size);
             PageInfo pageInfo = new PageInfo(ordersList);
             mv.addObject("pageInfo", pageInfo);
             mv.setViewName("manage/order_list");
-        }else {
-            List<Order> ordersList = orderService.queryOrdersByOrderNo(page, size,orderNo);
+        } else {
+            List<Order> ordersList = orderService.queryOrdersByOrderNo(page, size, orderNo);
             PageInfo pageInfo = new PageInfo(ordersList);
             mv.addObject("pageInfo", pageInfo);
             mv.setViewName("manage/order_list");
@@ -139,7 +145,7 @@ public class AdminController {
     }
 
     @RequestMapping("/ReApplyById.do")
-    public void ReApplyById(String id){
+    public void ReApplyById(String id) {
         userService.ReApplyById(id);
     }
 
@@ -154,25 +160,25 @@ public class AdminController {
     }
 
     @RequestMapping("/deleteOrderById.do")
-    public void deleteOrderById(String id){
+    public void deleteOrderById(String id) {
         orderService.deleteOrderById(id);
     }
 
-/*
-* 订单详情
-*
-* */
+    /*
+     * 订单详情
+     *
+     * */
     @RequestMapping("/queryByUserId.do")
-    public ModelAndView queryByUserId(@RequestParam(value = "id")int id,@RequestParam(value = "orderNo")Long orderNo){
+    public ModelAndView queryByUserId(@RequestParam(value = "id") int id, @RequestParam(value = "orderNo") Long orderNo) {
         ModelAndView mv = new ModelAndView();
         User buyer = userService.queryByUserId(id);
-       int productId = orderService.queryByOrderNo(orderNo);
-       Product product = productService.queryByProductId(productId);
+        int productId = orderService.queryByOrderNo(orderNo);
+        Product product = productService.queryByProductId(productId);
         int userId = product.getUserId();
         User seller = userService.queryByUserId(userId);
-        mv.addObject("buyer",buyer);
-        mv.addObject("seller",seller);
-        mv.addObject("product",product);
+        mv.addObject("buyer", buyer);
+        mv.addObject("seller", seller);
+        mv.addObject("product", product);
         mv.setViewName("manage/order_info");
         return mv;
     }

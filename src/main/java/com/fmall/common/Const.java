@@ -1,9 +1,9 @@
 package com.fmall.common;
 
 /**
- * 常量类
+ * @author ZSS
+ * @description 常量类
  */
-
 public class Const {
 
     public static final String CURRENT_USER = "currentUser";
@@ -55,13 +55,15 @@ public class Const {
         /**
          * 交易完成
          */
-        int ORDER_TRADE_FINESH = 40;
+        int ORDER_TRADE_FINISH = 40;
         /**
          * 订单关闭
          */
         int ORDER_CLOSE = 60;
-
-        int SELECT_ALL = 0; // 查询全部订单
+        /**
+         * 查询所有订单
+         */
+        int SELECT_ALL = 0;
     }
 
     /**
@@ -73,18 +75,24 @@ public class Const {
     }
 
     public interface AlipayCallback{
-        static final String TRADE_STATUS_BUYER_PAY = "WAIT_BUYER_PAY";
-        static final String TRADE_STATUS_TRADE_SUCCESS = "TRADE_SUCCESS";
-        static final String RESPONSE_SUCCESS = "success";
-        static final String RESPONSE_FAILED = "failed";
+        String TRADE_STATUS_BUYER_PAY = "WAIT_BUYER_PAY";
+        String TRADE_STATUS_TRADE_SUCCESS = "TRADE_SUCCESS";
+        String RESPONSE_SUCCESS = "success";
+        String RESPONSE_FAILED = "failed";
     }
 
     public enum OrderStatusEnum{
+        // 已取消
         CANCEL(0,"已取消"),
+        // 未支付
         NO_PAY(10,"未支付"),
+        // 已付款
         PAID(20,"已付款"),
+        // 已发货
         SHIPPED(40,"已发货"),
+        // 订单完成
         ORDER_SUCCESS(50,"订单完成"),
+        // 订单关闭
         ORDER_CLOSE(60,"订单关闭");
 
         OrderStatusEnum(int code, String value) {
@@ -102,7 +110,9 @@ public class Const {
     }
 
     public enum PayPlatFornEnum{
+        // 支付宝支付
         ALIPAY(1,"支付宝"),
+        // 微信支付
         WECHAT(2,"微信");
 
         PayPlatFornEnum(int code, String value) {
