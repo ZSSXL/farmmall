@@ -48,22 +48,23 @@ public class OrderServiceImpl implements IOrderService {
 
     private static final Logger logger = LoggerFactory.getLogger(OrderServiceImpl.class);
 
-    @Autowired
-    private ProductMapper productMapper;
+    private final ProductMapper productMapper;
+    private final OrderItemMapper orderItemMapper;
+    private final OrderMapper orderMapper;
+    private final CartMapper cartMapper;
+    private final PayInfoMapper payInfoMapper;
 
     @Autowired
-    private OrderItemMapper orderItemMapper;
+    public OrderServiceImpl(ProductMapper productMapper, OrderItemMapper orderItemMapper, OrderMapper orderMapper, CartMapper cartMapper, PayInfoMapper payInfoMapper) {
+        this.productMapper = productMapper;
+        this.orderItemMapper = orderItemMapper;
+        this.orderMapper = orderMapper;
+        this.cartMapper = cartMapper;
+        this.payInfoMapper = payInfoMapper;
+    }
 
-    @Autowired
-    private OrderMapper orderMapper;
-
-    @Autowired
-    private CartMapper cartMapper;
-
-    @Autowired
-    private PayInfoMapper payInfoMapper;
-
-    public ServerResponse<String> createOrder(Integer userId,Integer productId,Integer shippingId,Integer quantity){
+    @Override
+    public ServerResponse<String> createOrder(Integer userId, Integer productId, Integer shippingId, Integer quantity){
         // 1、查询是否有这个商品
         // 2、查询是否库存足够
         int resultCount = productMapper.selectByProductId(productId);
@@ -113,6 +114,7 @@ public class OrderServiceImpl implements IOrderService {
         return ServerResponse.createBySuccess("生成订单成功");
     }
 
+    @Override
     public ServerResponse<String> deleteOrder(Integer userId,Long orderNo){
         int resultCount = orderMapper.deleteOrder(userId, orderNo);
         resultCount =resultCount + orderItemMapper.deleteOrderItem(userId, orderNo);
@@ -122,6 +124,7 @@ public class OrderServiceImpl implements IOrderService {
         return ServerResponse.createByErrorMessage("删除订单失败");
     }
 
+    @Override
     public ServerResponse<PageInfo> showOrder(Integer userId,Integer pn,Integer status){
         PageHelper.startPage(pn,20);
         List<OrderItemVo> orderItemVoList =  orderMapper.showOrdersByUserId(userId,status);
@@ -132,6 +135,7 @@ public class OrderServiceImpl implements IOrderService {
         return ServerResponse.createBySuccess("查询成功",pageInfo);
     }
 
+    @Override
     public ServerResponse pay(Integer userId,Long orderNo,String path){
         Map<String,String> resultMap = Maps.newHashMap();
         // 1、查看是否有这个订单
@@ -170,8 +174,9 @@ public class OrderServiceImpl implements IOrderService {
         List<OrderItem> orderItemList = orderItemMapper.getByOrderNoUserId(userId,orderNo);
         for (OrderItem orderItem:orderItemList){
             GoodsDetail goods = GoodsDetail.newInstance(String.valueOf(orderItem.getProductId()), orderItem.getProductName(),
-                    BigDecimalUtil.mul(orderItem.getCurrentUnitPrice().doubleValue(),new Double(100).doubleValue()).longValue(), orderItem.getQuantity());
+                    BigDecimalUtil.mul(orderItem.getCurrentUnitPrice().doubleValue(), 100d).longValue(), orderItem.getQuantity());
             goodsDetailList.add(goods);
+
         }
         // 创建扫码支付请求builder，设置请求参数
         AlipayTradePrecreateRequestBuilder builder = new AlipayTradePrecreateRequestBuilder()
@@ -183,12 +188,12 @@ public class OrderServiceImpl implements IOrderService {
                 .setGoodsDetailList(goodsDetailList);
 
 
-        /** 一定要在创建AlipayTradeService之前调用Configs.init()设置默认参数
+        /* 一定要在创建AlipayTradeService之前调用Configs.init()设置默认参数
          *  Configs会读取classpath下的zfbinfo.properties文件配置信息，如果找不到该文件则确认该文件是否在classpath目录
          */
         Configs.init("zfbinfo.properties");
 
-        /** 使用Configs提供的默认参数
+        /* 使用Configs提供的默认参数
          *  AlipayTradeService可以使用单例或者为静态成员对象，不需要反复new
          */
         AlipayTradeService tradeService = new AlipayTradeServiceImpl.ClientBuilder().build();
@@ -240,6 +245,7 @@ public class OrderServiceImpl implements IOrderService {
         }
     }
 
+    @Override
     public ServerResponse alipayCallback(Map<String,String> params){
         Long orderNo = Long.valueOf(params.get("out_trade_no"));
         String tradeNo = params.get("trade_no");
@@ -267,6 +273,7 @@ public class OrderServiceImpl implements IOrderService {
         return ServerResponse.createBySuccess();
     }
 
+    @Override
     public ServerResponse queryOrderPayStatus(Integer userId,Long orderNo){
         Order order = orderMapper.selectExist(userId, orderNo);
         if(order == null){
@@ -278,7 +285,10 @@ public class OrderServiceImpl implements IOrderService {
         return ServerResponse.createByError();
     }
 
-    // 简单打印应答
+    /**
+     * 简单打印应答
+     * @param response response
+     */
     private void dumpResponse(AlipayResponse response) {
         if (response != null) {
             logger.info(String.format("code:%s, msg:%s", response.getCode(), response.getMsg()));
@@ -290,28 +300,31 @@ public class OrderServiceImpl implements IOrderService {
         }
     }
 
-    // 生成订单号
+    /**
+     * 生成订单号
+     * @return long
+     */
     private long generateOrderNo(){
         long currentTime = System.currentTimeMillis();
         return currentTime+new Random().nextInt(100);
     }
 
+    @Override
     public List<ProductIdAndQuantiry> selectCheckedProductFromCart(Integer userId){
-        List<ProductIdAndQuantiry> productIdAndQuantiryList = cartMapper.selectProductIdQuantiyByUserId(userId);
-        return productIdAndQuantiryList;
+        return cartMapper.selectProductIdQuantiyByUserId(userId);
     }
 
+    @Override
     public List<Integer> selectCheckedCarIdByUserId(Integer userId){
-        List<Integer> cartList = cartMapper.selectCheckedCartIdByUserId(userId);
-        return cartList;
+        return  cartMapper.selectCheckedCartIdByUserId(userId);
     }
 
     @Override
     public int deleteCartById(Integer cartId) {
-        int resultCount = cartMapper.deleteByPrimaryKey(cartId);
-        return resultCount;
+        return cartMapper.deleteByPrimaryKey(cartId);
     }
 
+    @Override
     public ServerResponse<PageInfo> selectOrderBySellerIdAndStatus(Integer buyyerId,Integer status,Integer pn){
         PageHelper.startPage(pn,20);
         // 1、查询
@@ -333,11 +346,12 @@ public class OrderServiceImpl implements IOrderService {
         return ServerResponse.createByErrorMessage("删除失败");
     }
 
+    @Override
     public OrderItemShippingVo selectOrderDetail(Integer userId, Long orderNo){
-        OrderItemShippingVo orderItemShippingVo = orderItemMapper.selectByOrderNo(userId, orderNo);
-        return orderItemShippingVo;
+        return orderItemMapper.selectByOrderNo(userId, orderNo);
     }
 
+    @Override
     public ServerResponse<String> sendOrder(Long orderNo,Integer boxId){
         int resultCount = orderMapper.updateBoxIdAndStatusByOrderNo(orderNo,boxId,Const.Order.ORDER_SENDED);
         if(resultCount == 0){

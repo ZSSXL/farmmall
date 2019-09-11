@@ -14,43 +14,58 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
 
+/**
+ * @author ZSS
+ * @description user controller
+ */
 @Controller
 @RequestMapping("/user/")
 public class UserController {
 
-    @Autowired
-    private IUserService iUserService;
+    private final IUserService iUserService;
 
-    @RequestMapping(value = "login.do",method = RequestMethod.POST)
+    @Autowired
+    public UserController(IUserService iUserService) {
+        this.iUserService = iUserService;
+    }
+
+    @RequestMapping(value = "login.do", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<User> login(String username, String password, HttpSession session){
+    public ServerResponse<User> login(String username, String password, HttpSession session) {
         ServerResponse<User> response = iUserService.login(username, password);
-        if(response.isSuccess()){
-            session.setAttribute(Const.CURRENT_USER,response.getData());
+        if (response.isSuccess()) {
+            session.setAttribute(Const.CURRENT_USER, response.getData());
         }
         return response;
     }
 
     /**
      * 用户登出
-     * @param session
-     * @return
+     *
+     * @param session session
+     * @return ServerResponse
      */
-    @RequestMapping(value="logout.do",method = RequestMethod.POST)
+    @RequestMapping(value = "logout.do", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<String> logout(HttpSession session){
+    public ServerResponse logout(HttpSession session) {
         session.removeAttribute(Const.CURRENT_USER);
         return ServerResponse.createBySuccess();
     }
 
-    @RequestMapping(value = "register.do",method = RequestMethod.POST)
+    /**
+     * 用户注册
+     *
+     * @param user 用户实体
+     * @return ServerResponse
+     */
+    @RequestMapping(value = "register.do", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<String> register(User user){
-        if(StringUtils.isBlank(user.getUsername())){
+    public ServerResponse register(User user) {
+        if (StringUtils.isBlank(user.getUsername())) {
             return ServerResponse.createByErrorMessage("用户名不能为空");
-        }else if(StringUtils.isBlank(user.getPassword())){
+        } else if (StringUtils.isBlank(user.getPassword())) {
             return ServerResponse.createByErrorMessage("密码不能为空");
-        }else if(StringUtils.isBlank(user.getPhone())){
+        } else if (StringUtils.isBlank(user.getPhone())) {
             return ServerResponse.createByErrorMessage("电话不能为空");
         }
         return iUserService.register(user);
@@ -58,72 +73,74 @@ public class UserController {
 
     /**
      * 获取密保问题
-     * @param username
-     * @return
+     *
+     * @param username 用户名
+     * @return ServerResponse
      */
-    @RequestMapping(value = "forget_get_question.do",method = RequestMethod.GET)
+    @RequestMapping(value = "forget_get_question.do", method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<String> forgetGetQuestion(String username){
-        ServerResponse<String> serverResponse = iUserService.forgetGetQuestion(username);
-        return serverResponse;
+    public ServerResponse<String> forgetGetQuestion(String username) {
+        return iUserService.forgetGetQuestion(username);
     }
 
     /**
      * 校验密保答案
-     * @param username
-     * @param question
-     * @param answer
-     * @return
-     */
-    @RequestMapping(value = "forget_check_answer.do",method = RequestMethod.POST)
-    @ResponseBody
-    public ServerResponse<String> forgetCheckAnswer(String username,String question,String answer){
-        ServerResponse<String> serverResponse = iUserService.forgetCheckAnswer(username, question, answer);
-        return serverResponse;
-    }
-
-    /**
      *
-     * @param username
-     * @return
+     * @param username 用户名
+     * @param question 问题
+     * @param answer   答案
+     * @return ServerResponse
      */
-    @RequestMapping(value = "forget_reset_password.do",method = RequestMethod.POST)
+    @RequestMapping(value = "forget_check_answer.do", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<String> forgetResetQuestion(String username,String passwordNew){
-        System.out.println("新密码："+passwordNew);
-        return iUserService.forgetResetQuestion(username,passwordNew);
+    public ServerResponse<String> forgetCheckAnswer(String username, String question, String answer) {
+        return iUserService.forgetCheckAnswer(username, question, answer);
     }
 
     /**
      * 重置密码
-     * @param username
-     * @param passwordOld
-     * @param passwordNew
+     *
+     * @param username    用户名
+     * @param passwordNew 新密码
+     * @return SererResponse
+     */
+    @RequestMapping(value = "forget_reset_password.do", method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse<String> forgetResetQuestion(String username, String passwordNew) {
+        return iUserService.forgetResetQuestion(username, passwordNew);
+    }
+
+    /**
+     * 重置密码
+     *
+     * @param username 用户名
+     * @param passwordOld 旧密码
+     * @param passwordNew 新密码
      * @return
      */
-    @RequestMapping(value = "reset_password.do",method = RequestMethod.POST)
+    @RequestMapping(value = "reset_password.do", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<String> resetPassword(String username,String passwordOld,String passwordNew){
-        System.out.println(username+":"+passwordOld+":"+passwordNew);
+    public ServerResponse<String> resetPassword(String username, String passwordOld, String passwordNew) {
+        System.out.println(username + ":" + passwordOld + ":" + passwordNew);
         ServerResponse<String> serverResponse = iUserService.resetPassword(username, passwordOld, passwordNew);
         return serverResponse;
     }
 
-    @RequestMapping(value = "apply_to_open_shop.do",method = RequestMethod.POST)
+    @RequestMapping(value = "apply_to_open_shop.do", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<String> applyToOpenningShop(HttpSession session,String username,String phone,String shopName){
+    public ServerResponse<String> applyToOpenningShop(HttpSession session, String username, String phone, String shopName) {
         User user = (User) session.getAttribute(Const.CURRENT_USER);
-        if(user == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"请先登录");
+        if (user == null) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "请先登录");
         }
         // 判断输入的用户名与session中的用户名是否一致
-        if(!user.getUsername().equals(username)){
+        if (!user.getUsername().equals(username)) {
             return ServerResponse.createByErrorMessage("输入的用户名与当前登录用户的用户名不一致，请重新输入");
-        }else if(!user.getPhone().equals(phone)){
+        } else if (!user.getPhone().equals(phone)) {
             return ServerResponse.createByErrorMessage("输入的电话与当前登录用户的电话不一致，请重新输入");
         }
         // 如果已经是店家就也不能申请
-        if(user.getRole() == Const.Role.ROLE_SELLER){
+        if (user.getRole() == Const.Role.ROLE_SELLER) {
             return ServerResponse.createByErrorMessage("你已经是店家");
         }
         // 更新数据库
@@ -137,27 +154,29 @@ public class UserController {
 
     /**
      * 通过商品的店家id获取该店家的用户名和店名
+     *
      * @param userId
      * @return
      */
-    @RequestMapping(value = "get_seller_info.do",method = RequestMethod.GET)
+    @RequestMapping(value = "get_seller_info.do", method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<User> getSellerInfo(Integer userId){
+    public ServerResponse<User> getSellerInfo(Integer userId) {
         ServerResponse<User> serverResponse = iUserService.getSellerInfo(userId);
         return serverResponse;
     }
 
     /**
      * 查看当前登录用户信息
+     *
      * @param session
      * @return
      */
-    @RequestMapping(value = "get_user_info.do",method = RequestMethod.GET)
+    @RequestMapping(value = "get_user_info.do", method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<User> getUserInfo(HttpSession session){
+    public ServerResponse<User> getUserInfo(HttpSession session) {
         User user = (User) session.getAttribute(Const.CURRENT_USER);
-        if(user == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"请先登录");
+        if (user == null) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "请先登录");
         }
         // 查询当前登录用户信息
         ServerResponse<User> userInfoByUserId = iUserService.getUserInfoByUserId(user.getId());

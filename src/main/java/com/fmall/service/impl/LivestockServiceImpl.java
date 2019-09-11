@@ -9,29 +9,38 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * @author ZSS
+ * @description livestock service implement
+ */
 @Service("iLivestockService")
 public class LivestockServiceImpl implements ILivestockService {
 
-    @Autowired
-    private LivestockMapper livestockMapper;
+    private final LivestockMapper livestockMapper;
 
-    public ServerResponse<List<Livestock>> getAllLivestock(){
+    @Autowired
+    public LivestockServiceImpl(LivestockMapper livestockMapper) {
+        this.livestockMapper = livestockMapper;
+    }
+
+    @Override
+    public ServerResponse<List<Livestock>> getAllLivestock() {
         List<Livestock> livestockList = livestockMapper.getAllLivestock();
-        if(livestockList == null){
+        if (livestockList == null) {
             return ServerResponse.createByErrorMessage("没有牲畜信息");
         }
-        return ServerResponse.createBySuccess("查询成功",livestockList);
+        return ServerResponse.createBySuccess("查询成功", livestockList);
     }
 
     @Override
     public ServerResponse<Livestock> selectLivestockByLabel(Integer label) {
         // 1、查询信息
         Livestock livestock = livestockMapper.selectLivestockByLabel(label);
-        if(livestock == null){
+        if (livestock == null) {
             return ServerResponse.createByErrorMessage("没有该牲畜信息");
         }
         livestock.setLabel(livestock.getLabel() / 100);
-        return ServerResponse.createBySuccess("查询成功",livestock);
+        return ServerResponse.createBySuccess("查询成功", livestock);
     }
 
 }

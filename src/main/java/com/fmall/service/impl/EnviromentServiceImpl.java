@@ -10,11 +10,19 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * @author ZSS
+ * @description enviroment service implement
+ */
 @Service("iEnviromentService")
 public class EnviromentServiceImpl implements IEnviromentService {
 
+    private final EnviromentMapper enviromentMapper;
+
     @Autowired
-    private EnviromentMapper enviromentMapper;
+    public EnviromentServiceImpl(EnviromentMapper enviromentMapper) {
+        this.enviromentMapper = enviromentMapper;
+    }
 
     @Override
     public List<Double> getTemperature(Integer annimalId) {
@@ -31,6 +39,7 @@ public class EnviromentServiceImpl implements IEnviromentService {
         return enviromentMapper.getHumidity(annimalId);
     }
 
+    @Override
     public ServerResponse<List<EnviromentVo>> selectEnviromentSimple(Integer label){
         List<EnviromentVo> enviromentVoList = enviromentMapper.selectEnviromentSimple(label);
         if(enviromentVoList == null){

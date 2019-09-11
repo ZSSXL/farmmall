@@ -5,32 +5,32 @@ import org.joda.time.DateTime;
 import java.util.Date;
 
 /**
- *  时间类工具
+ * 时间类工具
  */
 
 public class DateUtil {
 
-    public static final String STANARD_FORMAT = "yyyy-MM-dd";
+    private static final String STANARD_FORMAT = "yyyy-MM-dd";
 
-    public static final String STANARD_RORMAT_DETAIL = "HH:mm:ss";
+    private static final String STANARD_RORMAT_DETAIL = "HH:mm:ss";
 
     // 获取哪一天
-    public static String whichDay(){
+    private static String whichDay() {
         Date date = new Date();
         DateTime dateTime = new DateTime(date);
         return dateTime.toString(STANARD_FORMAT);
     }
 
     // 获取哪一个小时
-    public static String whichHour(){
+    private static String whichHour() {
         Date date = new Date();
         DateTime dateTime = new DateTime(date);
         return dateTime.toString(STANARD_RORMAT_DETAIL);
     }
 
-    public static String change(String oldDate){
+    public static String change(String oldDate) {
         String[] strs = oldDate.split("/");
-        String newDate = strs[0] +"-"+ strs[1] +"-"+ strs[2];
+        String newDate = strs[0] + "-" + strs[1] + "-" + strs[2];
         return newDate;
     }
 

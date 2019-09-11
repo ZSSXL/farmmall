@@ -12,17 +12,24 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
+/**
+ * @author ZSS
+ * @description category controller
+ */
 @Controller
 @RequestMapping("/category/")
 public class CategoryController {
 
+    private final ICategoryService iCategoryService;
+
     @Autowired
-    private ICategoryService iCategoryService;
+    public CategoryController(ICategoryService iCategoryService) {
+        this.iCategoryService = iCategoryService;
+    }
 
     @RequestMapping(value = "get_all_category.do",method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<List<Category>> getAllCategory(){
-        ServerResponse<List<Category>> serverResponse = iCategoryService.getAllCategory();
-        return serverResponse;
+        return iCategoryService.getAllCategory();
     }
 }

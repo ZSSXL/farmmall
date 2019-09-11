@@ -9,18 +9,27 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * @author ZSS
+ * @description category service implement
+ */
 @Service("iCategoryService")
 public class CategoryServiceImpl implements ICategoryService {
 
-    @Autowired
-    private CategoryMapper categoryMapper;
+    private final CategoryMapper categoryMapper;
 
-    public ServerResponse<List<Category>> getAllCategory(){
+    @Autowired
+    public CategoryServiceImpl(CategoryMapper categoryMapper) {
+        this.categoryMapper = categoryMapper;
+    }
+
+    @Override
+    public ServerResponse<List<Category>> getAllCategory() {
         List<Category> categoryList = categoryMapper.selectAll();
-        if(categoryList == null){
+        if (categoryList == null) {
             return ServerResponse.createByErrorMessage("没有分类信息");
         }
-        return ServerResponse.createBySuccess("查询成功",categoryList);
+        return ServerResponse.createBySuccess("查询成功", categoryList);
     }
 
 }

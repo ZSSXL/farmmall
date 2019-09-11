@@ -16,12 +16,21 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.*;
 
+/**
+ * @author ZSS
+ * @description 图标Controller
+ */
 @Controller
 public class EcharController {
-    @Autowired
+
     private ILogisticsService logisticsService;
-    @Autowired
     private IEnviromentService iEnviromentService;
+
+    @Autowired
+    public EcharController(ILogisticsService logisticsService, IEnviromentService iEnviromentService) {
+        this.logisticsService = logisticsService;
+        this.iEnviromentService = iEnviromentService;
+    }
 
     @RequestMapping(value = "/echar.do", method = RequestMethod.GET)
     @ResponseBody
@@ -33,12 +42,12 @@ public class EcharController {
         Collections.reverse(time);
         Collections.reverse(temperature);
         Collections.reverse(humidity);
-        List<String> s_time = new ArrayList<>();
+        List<String> sTime = new ArrayList<>();
         for (Date date : time) {
-            s_time.add(DateFormat.dateToString(date));
+            sTime.add(DateFormat.dateToString(date));
         }
         map.put("temperature", temperature);
-        map.put("time", s_time);
+        map.put("time", sTime);
         map.put("humidity", humidity);
         return map;
     }
@@ -65,12 +74,12 @@ public class EcharController {
         Collections.reverse(time);
         Collections.reverse(temperature);
         Collections.reverse(humidity);
-        List<String> s_time = new ArrayList<>();
+        List<String> sTime = new ArrayList<>();
         for (Date date : time) {
-            s_time.add(DateFormat.dateToString(date));
+            sTime.add(DateFormat.dateToString(date));
         }
         map.put("temperature", temperature);
-        map.put("time", s_time);
+        map.put("time", sTime);
         map.put("humidity", humidity);
         return map;
     }
@@ -78,7 +87,6 @@ public class EcharController {
     @RequestMapping(value = "show_enviroment.do", method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<List<EnviromentVo>> showEnvironment(Integer label) {
-        ServerResponse<List<EnviromentVo>> serverResponse = iEnviromentService.selectEnviromentSimple(label);
-        return serverResponse;
+        return iEnviromentService.selectEnviromentSimple(label);
     }
 }

@@ -12,11 +12,16 @@ import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
+/**
+ * @author ZSS
+ * @description file service implements
+ */
 @Service("iFileService")
 public class FileServiceImpl implements IFileService {
 
     private Logger logger = LoggerFactory.getLogger(FileServiceImpl.class);
 
+    @Override
     public String upload(MultipartFile file,String path){
         // 获取原始文件的文件名
         String fileName = file.getOriginalFilename();

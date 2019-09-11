@@ -142,7 +142,7 @@ public class Execute extends Thread {
                  logistics.setHumidity(humidity);
                  logistics.setLongitude(new BigDecimal(longitude));
                  logistics.setLatitude(new BigDecimal(latitude));
-                 onenetService.save_box(logistics);
+                 onenetService.saveBox(logistics);
                  System.out.println("冷链保鲜箱ok");
              }
 
@@ -160,7 +160,7 @@ public class Execute extends Thread {
                  enviroment.setLongitude(new BigDecimal(longitude));
                  enviroment.setLatitude(new BigDecimal(latitude));
                  enviroment.setLabel(1000101);
-                 onenetService.save_environment(enviroment);
+                 onenetService.saveEnvironment(enviroment);
                 System.out.println("牲畜跟踪系统ok");
                 }
 

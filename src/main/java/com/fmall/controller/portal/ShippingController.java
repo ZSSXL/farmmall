@@ -16,80 +16,106 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
 
+/**
+ * @author ZSS
+ * @description shipping controller
+ */
 @Controller
 @RequestMapping("/shipping/")
 public class ShippingController {
 
+    private final IShippingService iShippingService;
+
     @Autowired
-    private IShippingService iShippingService;
+    public ShippingController(IShippingService iShippingService) {
+        this.iShippingService = iShippingService;
+    }
 
     /**
      * 添加收获地址
-     * @param session
-     * @param shipping
-     * @return
+     *
+     * @param session  session
+     * @param shipping 收货地址实体
+     * @return ServerResponse
      */
-    @RequestMapping(value = "add_shipping.do",method = RequestMethod.POST)
+    @RequestMapping(value = "add_shipping.do", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<String> addShipping(HttpSession session, Shipping shipping){
+    public ServerResponse<String> addShipping(HttpSession session, Shipping shipping) {
         User user = (User) session.getAttribute(Const.CURRENT_USER);
-        if(user == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"请登录用户");
+        if (user == null) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "请登录用户");
         }
         shipping.setUserId(user.getId());
-        ServerResponse<String> serverResponse = iShippingService.addAddress(shipping);
-        return serverResponse;
+        return iShippingService.addAddress(shipping);
     }
 
     /**
      * 展示个人收获地址
-     * @param session
-     * @return
+     *
+     * @param session session
+     * @param pn      当前页
+     * @return ServerResponse
      */
-    @RequestMapping(value = "show_shipping.do",method = RequestMethod.GET)
+    @RequestMapping(value = "show_shipping.do", method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<PageInfo> showShippings(HttpSession session,@RequestParam(value = "pn",defaultValue = "1") Integer pn){
+    public ServerResponse<PageInfo> showShippings(HttpSession session, @RequestParam(value = "pn", defaultValue = "1") Integer pn) {
         User user = (User) session.getAttribute(Const.CURRENT_USER);
-        if(user == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"请先登录");
+        if (user == null) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "请先登录");
         }
-        ServerResponse<PageInfo> serverResponse = iShippingService.showAddresses(user.getId(), pn);
-        return serverResponse;
+        return iShippingService.showAddresses(user.getId(), pn);
     }
 
     /**
      * 展示个人收获地址
-     * @param session
-     * @return
+     *
+     * @param session    session
+     * @param shippingId 收货地址id
+     * @return ServerResponse
      */
-    @RequestMapping(value = "delete_shipping.do",method = RequestMethod.POST)
+    @RequestMapping(value = "delete_shipping.do", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<String> deleteShipping(HttpSession session,Integer shippingId){
+    public ServerResponse<String> deleteShipping(HttpSession session, Integer shippingId) {
         User user = (User) session.getAttribute(Const.CURRENT_USER);
-        if(user == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"请先登录");
+        if (user == null) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "请先登录");
         }
-        //ServerResponse<PageInfo> serverResponse = iShippingService.showAddresses(user.getId(), pn);
-        ServerResponse<String> stringServerResponse = iShippingService.deleteShipping(user.getId(), shippingId);
-        return stringServerResponse;
+        return iShippingService.deleteShipping(user.getId(), shippingId);
     }
 
-    @RequestMapping(value = "show_shipping_by_id.do",method = RequestMethod.GET)
+    /**
+     * 通过id展示收获地址
+     *
+     * @param session    session
+     * @param shippingId shippindId
+     * @return ServerResponse
+     */
+    @RequestMapping(value = "show_shipping_by_id.do", method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<Shipping> showShippingById(HttpSession session,Integer shippingId){
-        // iShippingService
-        ServerResponse<Shipping> serverResponse = iShippingService.selectShippingById(shippingId);
-        return serverResponse;
-    }
-
-    @RequestMapping(value = "edit_shipping.do",method = RequestMethod.POST)
-    @ResponseBody
-    public ServerResponse editShipping(HttpSession session,Shipping shipping){
+    public ServerResponse<Shipping> showShippingById(HttpSession session, Integer shippingId) {
         User user = (User) session.getAttribute(Const.CURRENT_USER);
-        if(shipping != null){
+        if (user == null) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "请先登录");
+        } else {
+            return iShippingService.selectShippingById(shippingId);
+        }
+
+    }
+
+    /**
+     * 修改收获地址
+     *
+     * @param session  session
+     * @param shipping 收货地址实体
+     * @return ServerResponse
+     */
+    @RequestMapping(value = "edit_shipping.do", method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse editShipping(HttpSession session, Shipping shipping) {
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (shipping != null) {
             shipping.setUserId(user.getId());
-            ServerResponse<String> stringServerResponse = iShippingService.editShipping(shipping);
-            return stringServerResponse;
+            return iShippingService.editShipping(shipping);
         }
         return ServerResponse.createByErrorMessage("出错啦！！！找程序员");
     }

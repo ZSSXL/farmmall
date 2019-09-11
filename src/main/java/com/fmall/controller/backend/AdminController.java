@@ -145,8 +145,8 @@ public class AdminController {
     }
 
     @RequestMapping("/ReApplyById.do")
-    public void ReApplyById(String id) {
-        userService.ReApplyById(id);
+    public void reApplyById(String id) {
+        userService.reApplyById(id);
     }
 
     @RequestMapping("/deleteBuyerById.do")

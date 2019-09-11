@@ -10,15 +10,23 @@ import com.fmall.service.OnenetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
+/**
+ * @author ZSH
+ * @description one net service implements
+ */
 @Service
 public class OnenetServiceImpl implements OnenetService {
+
+    private final LogisticsMapper logisticsMapper;
+    private final LivestockMapper liveStockMapper;
+    private final EnviromentMapper enviromentMapper;
+
     @Autowired
-    private LogisticsMapper logisticsMapper;
-    @Autowired
-    private LivestockMapper liveStockMapper;
-    @Autowired
-    private EnviromentMapper enviromentMapper;
+    public OnenetServiceImpl(LogisticsMapper logisticsMapper, LivestockMapper liveStockMapper, EnviromentMapper enviromentMapper) {
+        this.logisticsMapper = logisticsMapper;
+        this.liveStockMapper = liveStockMapper;
+        this.enviromentMapper = enviromentMapper;
+    }
 
 
     @Override
@@ -38,12 +46,12 @@ public class OnenetServiceImpl implements OnenetService {
     }
 
     @Override
-    public void save_box(Logistics logistics) {
+    public void saveBox(Logistics logistics) {
         logisticsMapper.insert(logistics);
     }
 
     @Override
-    public void save_environment(Enviroment enviroment) {
+    public void saveEnvironment(Enviroment enviroment) {
          enviromentMapper.insert(enviroment);
     }
 }

@@ -11,7 +11,7 @@ public interface OnenetService {
 
     void sava(Livestock liveStock);
 
-    void save_box(Logistics logistics);
+    void saveBox(Logistics logistics);
 
-    void save_environment(Enviroment enviroment);
+    void saveEnvironment(Enviroment enviroment);
 }

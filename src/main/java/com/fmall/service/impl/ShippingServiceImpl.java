@@ -11,12 +11,21 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * @author ZSS
+ * @description shipping service implements
+ */
 @Service("iShippingService")
 public class ShippingServiceImpl implements IShippingService {
 
-    @Autowired
-    private ShippingMapper shippingMapper;
+    private final ShippingMapper shippingMapper;
 
+    @Autowired
+    public ShippingServiceImpl(ShippingMapper shippingMapper) {
+        this.shippingMapper = shippingMapper;
+    }
+
+    @Override
     public ServerResponse<String> addAddress(Shipping shipping){
         int resultCount = shippingMapper.insertSelective(shipping);
         if(resultCount == 0){
@@ -25,8 +34,10 @@ public class ShippingServiceImpl implements IShippingService {
         return ServerResponse.createBySuccessMessage("添加收获地址成功");
     }
 
+    @Override
     public ServerResponse<PageInfo> showAddresses(Integer userId,Integer pn){
-        PageHelper.startPage(pn,6); // 默认一页最多有六条数据
+        // 默认一页最多有六条数据
+        PageHelper.startPage(pn,6);
         List<Shipping> shippingList = shippingMapper.selectAllByUserId(userId);
         if(shippingList == null){
             return ServerResponse.createByErrorMessage("暂时没有收获地址");
@@ -35,6 +46,7 @@ public class ShippingServiceImpl implements IShippingService {
         return ServerResponse.createBySuccess(pageInfo);
     }
 
+    @Override
     public ServerResponse<String> deleteShipping(Integer userId,Integer shippingId){
         int resultCount = shippingMapper.deleteByUserIdShippingId(userId,shippingId);
         if(resultCount == 0){
@@ -43,6 +55,7 @@ public class ShippingServiceImpl implements IShippingService {
         return ServerResponse.createBySuccessMessage("删除地址成功");
     }
 
+    @Override
     public ServerResponse<Shipping> showShippingById(Integer userId,Integer shippingId){
         Shipping shipping = shippingMapper.selectShippingByUseridShippingId(userId,shippingId);
         if(shipping == null){
@@ -51,6 +64,7 @@ public class ShippingServiceImpl implements IShippingService {
         return ServerResponse.createBySuccess("查询成功",shipping);
     }
 
+    @Override
     public ServerResponse<String> editShipping(Shipping shipping){
         int resultCount = shippingMapper.updateByPrimaryKeySelective(shipping);
         if(resultCount == 0){

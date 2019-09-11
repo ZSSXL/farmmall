@@ -16,18 +16,25 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * @author ZSS
+ * @description product service implement
+ */
 @Service("iProductService")
 public class ProductServiceImpl implements IProductService {
 
-    @Autowired
-    private ProductMapper productMapper;
+    private final ProductMapper productMapper;
+    private final CollectionMapper collectionMapper;
+    private final LivestockMapper livestockMapper;
 
     @Autowired
-    private CollectionMapper collectionMapper;
+    public ProductServiceImpl(ProductMapper productMapper, CollectionMapper collectionMapper, LivestockMapper livestockMapper) {
+        this.productMapper = productMapper;
+        this.collectionMapper = collectionMapper;
+        this.livestockMapper = livestockMapper;
+    }
 
-    @Autowired
-    private LivestockMapper livestockMapper;
-
+    @Override
     public ServerResponse<String> uploadProduct(Product product){
         int resultCount = productMapper.insert(product);
         if(resultCount == 0){
@@ -36,11 +43,7 @@ public class ProductServiceImpl implements IProductService {
         return ServerResponse.createBySuccessMessage("商品上传成功");
     }
 
-    /**
-     * 按不同参数展示商品展示商品
-     * @param pn
-     * @return
-     */
+    @Override
     public ServerResponse<PageInfo> selectProductByChoice(Integer type,Integer categoryId,Integer pn){
 
         PageHelper.startPage(pn,12);
@@ -59,11 +62,14 @@ public class ProductServiceImpl implements IProductService {
         return ServerResponse.createBySuccess(pageInfo);
     }
 
+
+    @Override
     public Product showProductById(Integer productId){
-        Product product = productMapper.selectByPrimaryKey(productId);
-        return product;
+        return productMapper.selectByPrimaryKey(productId);
     }
 
+
+    @Override
     public ServerResponse<String> addCollection(Integer userId,Integer productId){
         MyCollection myCollection = new MyCollection();
         myCollection.setUserId(userId);
@@ -81,6 +87,7 @@ public class ProductServiceImpl implements IProductService {
         return ServerResponse.createByErrorMessage("收藏失败");
     }
 
+    @Override
     public ServerResponse<String> deleteCollection(Integer userId, Integer productId){
         int resultCount = collectionMapper.deleteByUserIdCollectionId(userId,productId);
         if(resultCount == 0){
@@ -89,6 +96,7 @@ public class ProductServiceImpl implements IProductService {
         return ServerResponse.createBySuccessMessage("删除成功");
     }
 
+    @Override
     public ServerResponse<PageInfo> showCollection(Integer userId, int pn){
         PageHelper.startPage(pn,50);
         List<Product> productList = collectionMapper.selectProductByUserId(userId);
@@ -99,6 +107,7 @@ public class ProductServiceImpl implements IProductService {
         return ServerResponse.createBySuccess(pageInfo);
     }
 
+    @Override
     public ServerResponse<Livestock> selectLivestock(Integer label){
         Livestock livestock = livestockMapper.selectByLabel(label);
         if(livestock == null){
@@ -107,6 +116,7 @@ public class ProductServiceImpl implements IProductService {
         return ServerResponse.createBySuccess(livestock);
     }
 
+    @Override
     public Product queryByProductId(int productId) {
         return productMapper.selectByPrimaryKey(productId);
     }
@@ -120,6 +130,7 @@ public class ProductServiceImpl implements IProductService {
         return ServerResponse.createBySuccess(productList);
     }
 
+    @Override
     public ServerResponse<String> updateProductStatusByUserId(Integer userId, Integer status,Integer productId) {
         int resultCount = productMapper.updateStatusBySellerId(userId,status,productId);
         if(resultCount == 0){

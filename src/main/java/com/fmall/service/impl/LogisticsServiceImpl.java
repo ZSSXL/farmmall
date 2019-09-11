@@ -9,10 +9,20 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * @author ZSS
+ * @description logistic service impl
+ */
 @Service
 public class LogisticsServiceImpl implements ILogisticsService {
+
+    private final LogisticsMapper logisticsMapper;
+
     @Autowired
-    private LogisticsMapper logisticsMapper;
+    public LogisticsServiceImpl(LogisticsMapper logisticsMapper) {
+        this.logisticsMapper = logisticsMapper;
+    }
+
     @Override
     public List<Double> getTemperature(Integer boxId) {
         return logisticsMapper.getTemperature(boxId);

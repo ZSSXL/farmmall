@@ -3,6 +3,7 @@ package com.fmall.controller.portal;
 import com.fmall.common.ServerResponse;
 import com.fmall.pojo.Livestock;
 import com.fmall.service.ILivestockService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,49 +13,52 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.List;
 
 /**
- * 牲畜
+ * @author ZSS
+ * @description livestock controller
  */
-
 @Controller
 @RequestMapping("/livestock/")
 public class LivestockController {
 
-    @Autowired
-    private ILivestockService iLivestockService;
+    private final ILivestockService iLivestockService;
 
-    @RequestMapping(value = "get_all_livestock.do",method = RequestMethod.GET)
+    @Autowired
+    public LivestockController(ILivestockService iLivestockService) {
+        this.iLivestockService = iLivestockService;
+    }
+
+    @RequestMapping(value = "get_all_livestock.do", method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<List<Livestock>> getAllLivestock(){
-        ServerResponse<List<Livestock>> serverResponse = iLivestockService.getAllLivestock();
-        return serverResponse;
+    public ServerResponse<List<Livestock>> getAllLivestock() {
+        return iLivestockService.getAllLivestock();
     }
 
     /**
      * 扫码查询牲畜信息
-     * @param label
-     * @param va
-     * @return fmall/livastock/scanning_query.do
+     *
+     * @param label 标签
+     * @param va    种类
+     * @return ServerResponse
      */
-    @RequestMapping(value = "scanning_query.do",method = RequestMethod.GET)
+    @RequestMapping(value = "scanning_query.do", method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<Livestock> getLivestoce(Integer label,Integer va){
+    public ServerResponse<Livestock> getLivestock(Integer label, Integer va) {
         String varieties = "";
-        if(va == 1){
+        if (va == 1) {
             varieties = "猪";
             label = label * 100 + 1;
-        }else if(va == 2){
+        } else if (va == 2) {
             varieties = "牛";
             label = label * 100 + 2;
-        }else if(va == 3){
+        } else if (va == 3) {
             varieties = "羊";
             label = label * 100 + 3;
         }
-        if(label == null || varieties == ""){
+        if (label == null || StringUtils.isBlank(varieties)) {
             return ServerResponse.createByErrorMessage("传了错误的参数");
         }
         // 1、查询出牲畜信息
-        ServerResponse<Livestock> serverResponse = iLivestockService.selectLivestockByLabel(label);
-        return serverResponse;
+        return iLivestockService.selectLivestockByLabel(label);
     }
 
 }

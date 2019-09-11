@@ -5,11 +5,16 @@ import com.fmall.pojo.Category;
 
 import java.util.List;
 
+/**
+ * @author ZSS
+ * @description category service
+ */
 public interface ICategoryService {
 
     /**
      * 查询所有的分类
-     * @return
+     *
+     * @return ServerResponse
      */
     ServerResponse<List<Category>> getAllCategory();
 }

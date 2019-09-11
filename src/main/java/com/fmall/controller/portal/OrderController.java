@@ -28,38 +28,53 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author ZSS
+ * @description order controller
+ */
 @Controller
 @RequestMapping("/order/")
 public class OrderController {
 
     private static final Logger logger = LoggerFactory.getLogger(OrderController.class);
 
-    @Autowired
-    private IOrderService iOrderService;
+    private final IOrderService iOrderService;
+    private final ICartService iCartService;
 
     @Autowired
-    private ICartService iCartService;
+    public OrderController(IOrderService iOrderService, ICartService iCartService) {
+        this.iOrderService = iOrderService;
+        this.iCartService = iCartService;
+    }
 
     /**
      * 生成订单
-     * @param session
-     * @param productId
-     * @param shippingId
-     * @param quantity
-     * @return
+     * @param session session
+     * @param productId 商品id
+     * @param shippingId 收货地址id
+     * @param quantity 数量
+     * @return ServerResponse
      */
     @RequestMapping(value = "create.do",method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<String> create(HttpSession session,Integer productId,Integer shippingId ,Integer quantity){
+    public ServerResponse create(HttpSession session,Integer productId,Integer shippingId ,Integer quantity){
         User user = (User)session.getAttribute(Const.CURRENT_USER);
         if(user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
         }
         // 生成订单
-        ServerResponse<String> serverResponse = iOrderService.createOrder(user.getId(), productId, shippingId, quantity);
-        return serverResponse;
+        return iOrderService.createOrder(user.getId(), productId, shippingId, quantity);
     }
 
+    /**
+     * 从购物车中创建订单
+     *
+     * @param session session
+     * @param productId 商品id
+     * @param shippingId 收货地址id
+     * @param quantity 数量
+     * @return ServerResponse
+     */
     @RequestMapping(value = "create_from_cart.do",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> createFromCart(HttpSession session,Integer productId,Integer shippingId ,Integer quantity){
@@ -83,9 +98,9 @@ public class OrderController {
 
     /**
      * 将购物车中已勾选的商品下单
-     * @param session
-     * @param shippingId
-     * @return
+     * @param session session
+     * @param shippingId 收货地址id
+     * @return ServerResponse
      */
     @RequestMapping(value = "create_order_from_cart.do",method = RequestMethod.POST)
     @ResponseBody
@@ -117,34 +132,34 @@ public class OrderController {
 
     /**
      * 删除订单
-     * @param session
-     * @param orderNo
-     * @return
+     * @param session session
+     * @param orderNo 订单编号
+     * @return ServerResponse
      */
     @RequestMapping(value = "delete.do",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> delete(HttpSession session,Long orderNo){
         User user = (User)session.getAttribute(Const.CURRENT_USER);
-        ServerResponse<String> stringServerResponse = iOrderService.deleteOrder(user.getId(), orderNo);
-        return stringServerResponse;
-    }
+        return iOrderService.deleteOrder(user.getId(), orderNo);
+}
 
     /**
      * 卖家单方面删除订单
-     * @param orderNo
-     * @return
+     * @param orderNo 订单编号
+     * @return ServerResponse
      */
     @RequestMapping(value = "delete_by_seller.do",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> deleteBySeller(Long orderNo){
-        ServerResponse<String> stringServerResponse = iOrderService.deleteOrderBySeller(orderNo);
-        return stringServerResponse;
+        return iOrderService.deleteOrderBySeller(orderNo);
     }
 
     /**
      * 展示个人的订单,根据不同的选择，默认查询全部
-     * @param session
-     * @return
+     * @param session session
+     * @param pn 当前页
+     * @param status 状态
+     * @return ServerResponse
      */
     @RequestMapping(value = "show_order.do",method = RequestMethod.GET)
     @ResponseBody
@@ -154,16 +169,15 @@ public class OrderController {
         if(user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
         }
-        ServerResponse<PageInfo> pageInfoServerResponse = iOrderService.showOrder(user.getId(), pn,status);
-        return pageInfoServerResponse;
+        return iOrderService.showOrder(user.getId(), pn,status);
     }
 
     /**
      * 支付接口
-     * @param session
-     * @param request
-     * @param orderNo
-     * @return
+     * @param session session
+     * @param request 请求
+     * @param orderNo 订单编号
+     * @return ServerResponse
      */
     @RequestMapping(value = "pay.do",method = RequestMethod.GET)
     @ResponseBody
@@ -175,8 +189,7 @@ public class OrderController {
         String path = request.getSession().getServletContext().getRealPath("upload");
         // 更新order表的收货地址
         // 更新订单状态
-        ServerResponse serverResponse = iOrderService.pay(user.getId(), orderNo,path);
-        return serverResponse;
+        return iOrderService.pay(user.getId(), orderNo,path);
     }
 
     @RequestMapping("alipay_callback.do")
@@ -199,8 +212,8 @@ public class OrderController {
         // Important 验证回调的重要性，是不是支付宝发的，并且还有避免重复通知。
         params.remove("sign_type");
         try {
-            boolean alipayRSACheckedV2 = AlipaySignature.rsaCheckV2(params, Configs.getAlipayPublicKey(),"utf-8",Configs.getSignType());
-            if(!alipayRSACheckedV2){
+            boolean alipayRsaCheckedV2 = AlipaySignature.rsaCheckV2(params, Configs.getAlipayPublicKey(),"utf-8",Configs.getSignType());
+            if(!alipayRsaCheckedV2){
                 return ServerResponse.createByErrorMessage("非法请求，验证不通过，再恶意请求就找网警了");
             }
         } catch (AlipayApiException e) {
@@ -232,9 +245,9 @@ public class OrderController {
 
     /**
      * 查询订单详情
-     * @param session
-     * @param orderNo
-     * @return
+     * @param session session
+     * @param orderNo 订单编号
+     * @return ServerResponse
      */
     @RequestMapping(value = "show_order_detail.do",method = RequestMethod.POST)
     @ResponseBody
@@ -254,9 +267,9 @@ public class OrderController {
     }
 
 
-    /** _______________________________________________________________________________ **/
-    /** ----------------------------- 卖家查询订单 -------------------------------------- **/
-    /** _______________________________________________________________________________ **/
+    /** ================================================================================
+        ----------------------------- 卖家查询订单 --------------------------------------
+        ================================================================================  **/
 
     @RequestMapping(value = "select_order_seller_id_type.do",method = RequestMethod.GET)
     @ResponseBody
@@ -272,8 +285,7 @@ public class OrderController {
         }
         // todo 查询除购买了该卖家商品的所有订单
         //IOrderService
-        ServerResponse<PageInfo> pageInfoServerResponse = iOrderService.selectOrderBySellerIdAndStatus(user.getId(), status, pn);
-        return pageInfoServerResponse;
+        return iOrderService.selectOrderBySellerIdAndStatus(user.getId(), status, pn);
     }
 
     @RequestMapping(value = "send_order.do",method = RequestMethod.POST)
