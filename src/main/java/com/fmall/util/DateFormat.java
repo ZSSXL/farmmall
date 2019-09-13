@@ -14,7 +14,7 @@ public class DateFormat {
 
     private static final String STANARD_FORMAT = "yyyy-MM-dd";
 
-    private static final String STANARD_FORMAT_DETAIL = "yyyy-MM-dd HH:mm:ss";
+    public static final String STANARD_FORMAT_DETAIL = "yyyy-MM-dd HH:mm:ss";
 
     /**
      * 获取当天日日期，并转换为yyyy-mm-dd的格式
