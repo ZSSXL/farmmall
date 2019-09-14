@@ -16,22 +16,28 @@ public class Const {
 
     public static final String EMAIL = "email";
 
+
+    public interface RedisCacheExtime {
+        // 30分钟
+        int REDIS_SESSION_EXTIME = 60 * 30;
+    }
+
     /**
      * 角色
      */
-    public interface  Role{
+    public interface Role {
         int ROLE_ADMIN = 0;
         int ROLE_SELLER = 1;
         int ROLE_BUYER = 2;
         int APPLY_OPEN_SHOP = 3;
     }
 
-    public interface Check{
+    public interface Check {
         int CHECKED = 1;    // 已经选择
         int UNCHECKED = 0;  // 未选择
     }
 
-    public interface Order{
+    public interface Order {
         /**
          * 支付类型 在线支付
          */
@@ -69,61 +75,67 @@ public class Const {
     /**
      * 商品展示的选择
      */
-    public interface Type{
+    public interface Type {
         int DEFAULT = 1;    // 默认
         int CATEGORY = 2;   // 肉种类
     }
 
-    public interface AlipayCallback{
+    public interface AlipayCallback {
         String TRADE_STATUS_BUYER_PAY = "WAIT_BUYER_PAY";
         String TRADE_STATUS_TRADE_SUCCESS = "TRADE_SUCCESS";
         String RESPONSE_SUCCESS = "success";
         String RESPONSE_FAILED = "failed";
     }
 
-    public enum OrderStatusEnum{
+    public enum OrderStatusEnum {
         // 已取消
-        CANCEL(0,"已取消"),
+        CANCEL(0, "已取消"),
         // 未支付
-        NO_PAY(10,"未支付"),
+        NO_PAY(10, "未支付"),
         // 已付款
-        PAID(20,"已付款"),
+        PAID(20, "已付款"),
         // 已发货
-        SHIPPED(40,"已发货"),
+        SHIPPED(40, "已发货"),
         // 订单完成
-        ORDER_SUCCESS(50,"订单完成"),
+        ORDER_SUCCESS(50, "订单完成"),
         // 订单关闭
-        ORDER_CLOSE(60,"订单关闭");
+        ORDER_CLOSE(60, "订单关闭");
 
         OrderStatusEnum(int code, String value) {
             this.value = value;
             this.code = code;
         }
+
         private String value;
         private int code;
+
         public String getValue() {
             return value;
         }
+
         public int getCode() {
             return code;
         }
     }
 
-    public enum PayPlatFornEnum{
+    public enum PayPlatFornEnum {
         // 支付宝支付
-        ALIPAY(1,"支付宝"),
+        ALIPAY(1, "支付宝"),
         // 微信支付
-        WECHAT(2,"微信");
+        WECHAT(2, "微信");
 
         PayPlatFornEnum(int code, String value) {
             this.value = value;
             this.code = code;
         }
+
         private String value;
         private int code;
+
         public String getValue() {
             return value;
         }
+
         public int getCode() {
             return code;
         }

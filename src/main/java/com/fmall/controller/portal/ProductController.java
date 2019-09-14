@@ -9,8 +9,13 @@ import com.fmall.pojo.User;
 import com.fmall.service.IFileService;
 import com.fmall.service.IProductService;
 import com.fmall.service.IUserService;
+import com.fmall.util.CookieUtil;
+import com.fmall.util.JsonUtil;
 import com.fmall.util.PropertiesUtil;
+import com.fmall.util.RedisPoolUtil;
 import com.github.pagehelper.PageInfo;
+import com.google.api.Http;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,9 +54,14 @@ public class ProductController {
      */
     @RequestMapping(value = "release_product.do", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<String> releaseProduct(HttpSession session, Product product, @RequestParam(value = "file", required = false) MultipartFile file
+    public ServerResponse<String> releaseProduct(Product product, @RequestParam(value = "file", required = false) MultipartFile file
             , HttpServletRequest request) {
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        String loginToken = getLoginToken(request);
+        if (StringUtils.isEmpty(loginToken)) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "请先登录");
+        }
+        String userJsonStr = RedisPoolUtil.get(loginToken);
+        User user = JsonUtil.stringToObject(userJsonStr, User.class);
         if (user == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登录，请登录管理员");
         }
@@ -131,14 +141,19 @@ public class ProductController {
     /**
      * 添加收藏
      *
-     * @param session   session
+     * @param request   请求
      * @param productId 产品id
      * @return ServerResponse
      */
     @RequestMapping(value = "add_collection.do", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<String> addCollection(HttpSession session, Integer productId) {
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+    public ServerResponse<String> addCollection(HttpServletRequest request, Integer productId) {
+        String loginToken = getLoginToken(request);
+        if (StringUtils.isEmpty(loginToken)) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "请先登录");
+        }
+        String userJsonStr = RedisPoolUtil.get(loginToken);
+        User user = JsonUtil.stringToObject(userJsonStr, User.class);
         if (user == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登录,请先登录");
         }
@@ -149,14 +164,19 @@ public class ProductController {
     /**
      * 删除收藏
      *
-     * @param session   session
+     * @param request   请求
      * @param productId 产品id
      * @return ServerResponse
      */
     @RequestMapping(value = "delete_collection.do", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<String> deleteCollection(HttpSession session, Integer productId) {
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+    public ServerResponse<String> deleteCollection(HttpServletRequest request, Integer productId) {
+        String loginToken = getLoginToken(request);
+        if (StringUtils.isEmpty(loginToken)) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "请先登录");
+        }
+        String userJsonStr = RedisPoolUtil.get(loginToken);
+        User user = JsonUtil.stringToObject(userJsonStr, User.class);
         if (user == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登录，请登录管理员");
         }
@@ -167,14 +187,19 @@ public class ProductController {
     /**
      * 展示收藏
      *
-     * @param session session
+     * @param request 请求
      * @param pn      每页大小
      * @return ServerResponse
      */
     @RequestMapping(value = "show_collection.do", method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<PageInfo> showCollection(HttpSession session, @RequestParam(value = "pn", defaultValue = "1") int pn) {
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+    public ServerResponse<PageInfo> showCollection(HttpServletRequest request, @RequestParam(value = "pn", defaultValue = "1") int pn) {
+        String loginToken = getLoginToken(request);
+        if (StringUtils.isEmpty(loginToken)) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "请先登录");
+        }
+        String userJsonStr = RedisPoolUtil.get(loginToken);
+        User user = JsonUtil.stringToObject(userJsonStr, User.class);
         if (user == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登录，请登录管理员");
         }
@@ -198,13 +223,18 @@ public class ProductController {
     /**
      * 卖家展示产品
      *
-     * @param session session
+     * @param request 请求
      * @return ServerResponse
      */
     @RequestMapping(value = "show_product_by_seller.do", method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<List<Product>> showProductBySellerId(HttpSession session) {
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+    public ServerResponse<List<Product>> showProductBySellerId(HttpServletRequest request) {
+        String loginToken = getLoginToken(request);
+        if (StringUtils.isEmpty(loginToken)) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "请先登录");
+        }
+        String userJsonStr = RedisPoolUtil.get(loginToken);
+        User user = JsonUtil.stringToObject(userJsonStr, User.class);
         if (user == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "请登录");
         }
@@ -218,18 +248,39 @@ public class ProductController {
     /**
      * 店家修改商品状态
      *
+     * @param request   请求
+     * @param productId 产品id
+     * @param status    状态
      * @return ServerResponse
      */
     @RequestMapping(value = "update_product_status.do", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<String> updateProductStatus(HttpSession session, Integer status, Integer productId) {
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+    public ServerResponse<String> updateProductStatus(HttpServletRequest request, Integer status, Integer productId) {
+        String loginToken = getLoginToken(request);
+        if (StringUtils.isEmpty(loginToken)) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "请先登录");
+        }
+        String userJsonStr = RedisPoolUtil.get(loginToken);
+        User user = JsonUtil.stringToObject(userJsonStr, User.class);
+        if (user == null) {
+            return ServerResponse.createByError();
+        }
         // 判断是否未卖家身份
         if (user.getRole() != 1) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(), "权限不足");
         }
         // 查询商品
         return iProductService.updateProductStatusByUserId(user.getId(), status, productId);
+    }
+
+    /**
+     * 获取token
+     *
+     * @param request 请求
+     * @return String
+     */
+    private String getLoginToken(HttpServletRequest request) {
+        return CookieUtil.readLoginToken(request);
     }
 
 }

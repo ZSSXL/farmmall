@@ -9,10 +9,15 @@ import com.fmall.common.ServerResponse;
 import com.fmall.pojo.User;
 import com.fmall.service.ICartService;
 import com.fmall.service.IOrderService;
+import com.fmall.util.CookieUtil;
+import com.fmall.util.JsonUtil;
+import com.fmall.util.RedisPoolUtil;
 import com.fmall.vo.OrderItemShippingVo;
 import com.fmall.vo.ProductIdAndQuantiry;
 import com.github.pagehelper.PageInfo;
+import com.google.api.Http;
 import com.google.common.collect.Maps;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +29,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -49,18 +55,24 @@ public class OrderController {
 
     /**
      * 生成订单
-     * @param session session
-     * @param productId 商品id
+     *
+     * @param request    请求
+     * @param productId  商品id
      * @param shippingId 收货地址id
-     * @param quantity 数量
+     * @param quantity   数量
      * @return ServerResponse
      */
-    @RequestMapping(value = "create.do",method = RequestMethod.POST)
+    @RequestMapping(value = "create.do", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse create(HttpSession session,Integer productId,Integer shippingId ,Integer quantity){
-        User user = (User)session.getAttribute(Const.CURRENT_USER);
-        if(user == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
+    public ServerResponse create(HttpServletRequest request, Integer productId, Integer shippingId, Integer quantity) {
+        String loginToken = getLoginToken(request);
+        if (StringUtils.isEmpty(loginToken)) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "请先登录");
+        }
+        String userJsonStr = RedisPoolUtil.get(loginToken);
+        User user = JsonUtil.stringToObject(userJsonStr, User.class);
+        if (user == null) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
         }
         // 生成订单
         return iOrderService.createOrder(user.getId(), productId, shippingId, quantity);
@@ -69,27 +81,32 @@ public class OrderController {
     /**
      * 从购物车中创建订单
      *
-     * @param session session
-     * @param productId 商品id
+     * @param request    请求
+     * @param productId  商品id
      * @param shippingId 收货地址id
-     * @param quantity 数量
+     * @param quantity   数量
      * @return ServerResponse
      */
-    @RequestMapping(value = "create_from_cart.do",method = RequestMethod.POST)
+    @RequestMapping(value = "create_from_cart.do", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<String> createFromCart(HttpSession session,Integer productId,Integer shippingId ,Integer quantity){
-        User user = (User)session.getAttribute(Const.CURRENT_USER);
-        if(user == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
+    public ServerResponse<String> createFromCart(HttpServletRequest request, Integer productId, Integer shippingId, Integer quantity) {
+        String loginToken = getLoginToken(request);
+        if (StringUtils.isEmpty(loginToken)) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "请先登录");
+        }
+        String userJsonStr = RedisPoolUtil.get(loginToken);
+        User user = JsonUtil.stringToObject(userJsonStr, User.class);
+        if (user == null) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
         }
         // 生成订单
         ServerResponse<String> serverResponse = iOrderService.createOrder(user.getId(), productId, shippingId, quantity);
-        if(!serverResponse.isSuccess()){
+        if (!serverResponse.isSuccess()) {
             return ServerResponse.createByErrorMessage("下单失败");
         }
         // 删除购物车中的商品 因为下单设定为一定要经过购物车，所以下单后要删除购物车中的商品
-        ServerResponse<String> serverResponse1 = iCartService.deleteCartByUserIdProductIdQuantity(user.getId(),productId,quantity);
-        if(!serverResponse1.isSuccess()){
+        ServerResponse<String> serverResponse1 = iCartService.deleteCartByUserIdProductIdQuantity(user.getId(), productId, quantity);
+        if (!serverResponse1.isSuccess()) {
             return serverResponse1;
         }
         return serverResponse1;
@@ -98,32 +115,43 @@ public class OrderController {
 
     /**
      * 将购物车中已勾选的商品下单
-     * @param session session
+     *
+     * @param request    请求
      * @param shippingId 收货地址id
      * @return ServerResponse
      */
-    @RequestMapping(value = "create_order_from_cart.do",method = RequestMethod.POST)
+    @RequestMapping(value = "create_order_from_cart.do", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<String> createOrderByCheckedFromCart(HttpSession session,Integer shippingId){
-        User user = (User)session.getAttribute(Const.CURRENT_USER);
+    public ServerResponse<String> createOrderByCheckedFromCart(HttpServletRequest request, Integer shippingId) {
+        String loginToken = getLoginToken(request);
+        if (StringUtils.isEmpty(loginToken)) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "请先登录");
+        }
+        String userJsonStr = RedisPoolUtil.get(loginToken);
+        User user = JsonUtil.stringToObject(userJsonStr, User.class);
         // 1、查出购物车中已勾选的商品的productId,quantity
-        List<ProductIdAndQuantiry> productIdAndQuantiryList = iOrderService.selectCheckedProductFromCart(user.getId());
-        if(productIdAndQuantiryList == null){
+        List<ProductIdAndQuantiry> productIdAndQuantiryList;
+        if (user != null) {
+            productIdAndQuantiryList = iOrderService.selectCheckedProductFromCart(user.getId());
+        } else {
+            return ServerResponse.createByError();
+        }
+        if (productIdAndQuantiryList == null) {
             return ServerResponse.createByErrorMessage("当前购物车中没有被选中的商品");
         }
         // 2、一一下单
-        for(ProductIdAndQuantiry productIdAndQuantiry : productIdAndQuantiryList){
+        for (ProductIdAndQuantiry productIdAndQuantiry : productIdAndQuantiryList) {
             ServerResponse<String> serverResponse = iOrderService.createOrder(user.getId(), productIdAndQuantiry.getProductId(), shippingId, productIdAndQuantiry.getQuantity());
-            if(!serverResponse.isSuccess()){
+            if (!serverResponse.isSuccess()) {
                 return ServerResponse.createByErrorMessage("下单失败了");
             }
         }
         // 下单后删除购物车中的商品
         List<Integer> checkedCartList = iOrderService.selectCheckedCarIdByUserId(user.getId());
-        for(Integer checkedItem : checkedCartList){
+        for (Integer checkedItem : checkedCartList) {
             // 通过id删除购物车中的商品
             int resultCount = iOrderService.deleteCartById(checkedItem);
-            if(resultCount == 0){
+            if (resultCount == 0) {
                 return ServerResponse.createByErrorMessage("删除购物车商品这里出了问题");
             }
         }
@@ -132,112 +160,144 @@ public class OrderController {
 
     /**
      * 删除订单
-     * @param session session
+     *
+     * @param request 请求
      * @param orderNo 订单编号
      * @return ServerResponse
      */
-    @RequestMapping(value = "delete.do",method = RequestMethod.POST)
+    @RequestMapping(value = "delete.do", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<String> delete(HttpSession session,Long orderNo){
-        User user = (User)session.getAttribute(Const.CURRENT_USER);
-        return iOrderService.deleteOrder(user.getId(), orderNo);
-}
+    public ServerResponse<String> delete(HttpServletRequest request, Long orderNo) {
+        String loginToken = getLoginToken(request);
+        if (StringUtils.isEmpty(loginToken)) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "请先登录");
+        }
+        String userJsonStr = RedisPoolUtil.get(loginToken);
+        User user = JsonUtil.stringToObject(userJsonStr, User.class);
+        if (user != null) {
+            return iOrderService.deleteOrder(user.getId(), orderNo);
+        } else {
+            return ServerResponse.createByError();
+        }
+    }
 
     /**
      * 卖家单方面删除订单
+     *
      * @param orderNo 订单编号
      * @return ServerResponse
      */
-    @RequestMapping(value = "delete_by_seller.do",method = RequestMethod.POST)
+    @RequestMapping(value = "delete_by_seller.do", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<String> deleteBySeller(Long orderNo){
+    public ServerResponse<String> deleteBySeller(Long orderNo) {
         return iOrderService.deleteOrderBySeller(orderNo);
     }
 
     /**
      * 展示个人的订单,根据不同的选择，默认查询全部
-     * @param session session
-     * @param pn 当前页
-     * @param status 状态
+     *
+     * @param request 请求
+     * @param pn      当前页
+     * @param status  状态
      * @return ServerResponse
      */
-    @RequestMapping(value = "show_order.do",method = RequestMethod.GET)
+    @RequestMapping(value = "show_order.do", method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<PageInfo> showOrder(HttpSession session,@RequestParam(value = "pn",defaultValue = "1") Integer pn
-            ,@RequestParam(value = "status",defaultValue = "0") Integer status){
-        User user = (User)session.getAttribute(Const.CURRENT_USER);
-        if(user == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
+    public ServerResponse<PageInfo> showOrder(HttpServletRequest request, @RequestParam(value = "pn", defaultValue = "1") Integer pn
+            , @RequestParam(value = "status", defaultValue = "0") Integer status) {
+        String loginToken = getLoginToken(request);
+        if (StringUtils.isEmpty(loginToken)) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "请先登录");
         }
-        return iOrderService.showOrder(user.getId(), pn,status);
+        String userJsonStr = RedisPoolUtil.get(loginToken);
+        User user = JsonUtil.stringToObject(userJsonStr, User.class);
+        if (user == null) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
+        }
+        return iOrderService.showOrder(user.getId(), pn, status);
     }
 
     /**
      * 支付接口
-     * @param session session
+     *
      * @param request 请求
      * @param orderNo 订单编号
      * @return ServerResponse
      */
-    @RequestMapping(value = "pay.do",method = RequestMethod.GET)
+    @RequestMapping(value = "pay.do", method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse pay(HttpSession session, HttpServletRequest request,Long orderNo){
-        User user = (User)session.getAttribute(Const.CURRENT_USER);
-        if(user == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
+    public ServerResponse pay(HttpServletRequest request, Long orderNo) {
+        String loginToken = getLoginToken(request);
+        if (StringUtils.isEmpty(loginToken)) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "请先登录");
+        }
+        String userJsonStr = RedisPoolUtil.get(loginToken);
+        User user = JsonUtil.stringToObject(userJsonStr, User.class);
+        if (user == null) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
         }
         String path = request.getSession().getServletContext().getRealPath("upload");
         // 更新order表的收货地址
         // 更新订单状态
-        return iOrderService.pay(user.getId(), orderNo,path);
+        return iOrderService.pay(user.getId(), orderNo, path);
     }
 
     @RequestMapping("alipay_callback.do")
     @ResponseBody
-    public Object alipayCallback(HttpServletRequest request){
-        Map<String,String> params = Maps.newHashMap();
+    public Object alipayCallback(HttpServletRequest request) {
+        Map<String, String> params = Maps.newHashMap();
         Map requestParams = request.getParameterMap();
-        for(Iterator iter = requestParams.keySet().iterator();iter.hasNext();){
+        for (Iterator iter = requestParams.keySet().iterator(); iter.hasNext(); ) {
             String name = (String) iter.next();
             String[] values = (String[]) requestParams.get(name);
             String valueStr = "";
-            for(int i = 0;i < values.length;i++){
+            for (int i = 0; i < values.length; i++) {
                 valueStr = (i == values.length - 1) ? valueStr + values[i] : valueStr + values[i] + ",";
             }
-            params.put(name,valueStr);
+            params.put(name, valueStr);
         }
-        System.out.println("支付宝回调,参数："+params);
-        logger.info("支付宝回调，sign:{},trade_status:{},参数:{}",params.get("sign"),params.get("trade_status"),params.toString());
+        System.out.println("支付宝回调,参数：" + params);
+        logger.info("支付宝回调，sign:{},trade_status:{},参数:{}", params.get("sign"), params.get("trade_status"), params.toString());
 
         // Important 验证回调的重要性，是不是支付宝发的，并且还有避免重复通知。
         params.remove("sign_type");
         try {
-            boolean alipayRsaCheckedV2 = AlipaySignature.rsaCheckV2(params, Configs.getAlipayPublicKey(),"utf-8",Configs.getSignType());
-            if(!alipayRsaCheckedV2){
+            boolean alipayRsaCheckedV2 = AlipaySignature.rsaCheckV2(params, Configs.getAlipayPublicKey(), "utf-8", Configs.getSignType());
+            if (!alipayRsaCheckedV2) {
                 return ServerResponse.createByErrorMessage("非法请求，验证不通过，再恶意请求就找网警了");
             }
         } catch (AlipayApiException e) {
-            logger.error("支付宝回调异常：",e);
+            logger.error("支付宝回调异常：", e);
             e.printStackTrace();
         }
-        // todo 验证各种数据
-
         ServerResponse serverResponse = iOrderService.alipayCallback(params);
-        if(serverResponse.isSuccess()){
+        if (serverResponse.isSuccess()) {
             return Const.AlipayCallback.RESPONSE_SUCCESS;
         }
         return Const.AlipayCallback.RESPONSE_FAILED;
     }
 
-    @RequestMapping(value = "query_order_pay_status.do",method = RequestMethod.POST)
+    /**
+     * 查询订单状态
+     *
+     * @param request 请求
+     * @param orderNo 订单号
+     * @return ServerResponse
+     */
+    @RequestMapping(value = "query_order_pay_status.do", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<Boolean> queryOrderPayStatus(HttpSession session, Long orderNo){
-        User user = (User)session.getAttribute(Const.CURRENT_USER);
-        if(user == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
+    public ServerResponse<Boolean> queryOrderPayStatus(HttpServletRequest request, Long orderNo) {
+        String loginToken = getLoginToken(request);
+        if (StringUtils.isEmpty(loginToken)) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "请先登录");
+        }
+        String userJsonStr = RedisPoolUtil.get(loginToken);
+        User user = JsonUtil.stringToObject(userJsonStr, User.class);
+        if (user == null) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
         }
         ServerResponse serverResponse = iOrderService.queryOrderPayStatus(user.getId(), orderNo);
-        if(serverResponse.isSuccess()){
+        if (serverResponse.isSuccess()) {
             return ServerResponse.createBySuccess(true);
         }
         return ServerResponse.createBySuccess(false);
@@ -245,53 +305,91 @@ public class OrderController {
 
     /**
      * 查询订单详情
+     *
+     * @param request 请求
      * @param session session
      * @param orderNo 订单编号
      * @return ServerResponse
      */
-    @RequestMapping(value = "show_order_detail.do",method = RequestMethod.POST)
+    @RequestMapping(value = "show_order_detail.do", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<String> showOrderDetail(HttpSession session, Long orderNo){
-        User user = (User)session.getAttribute(Const.CURRENT_USER);
-        if(user == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"请先登录");
+    public ServerResponse<String> showOrderDetail(HttpSession session, HttpServletRequest request, Long orderNo) {
+        String loginToken = getLoginToken(request);
+        if (StringUtils.isEmpty(loginToken)) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "请先登录");
+        }
+        String userJsonStr = RedisPoolUtil.get(loginToken);
+        User user = JsonUtil.stringToObject(userJsonStr, User.class);
+        if (user == null) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "请先登录");
         }
         // 1、去查询
         OrderItemShippingVo orderItemShippingVo = iOrderService.selectOrderDetail(user.getId(), orderNo);
         System.out.println(orderItemShippingVo);
-        if(orderItemShippingVo == null){
+        if (orderItemShippingVo == null) {
             return ServerResponse.createByErrorMessage("杀一个程序猿猴祭天");
         }
-        session.setAttribute(Const.CURRENT_ORDER_DETAIL,orderItemShippingVo);
+        session.setAttribute(Const.CURRENT_ORDER_DETAIL, orderItemShippingVo);
         return ServerResponse.createBySuccess();
     }
 
 
-    /** ================================================================================
-        ----------------------------- 卖家查询订单 --------------------------------------
-        ================================================================================  **/
+    /**
+     * ================================================================================
+     * ----------------------------- 卖家查询订单 --------------------------------------
+     * ================================================================================
+     **/
 
-    @RequestMapping(value = "select_order_seller_id_type.do",method = RequestMethod.GET)
+    /**
+     * 通过卖家id和状态查询订单
+     *
+     * @param request 请求
+     * @param status  状态
+     * @param pn      当前页
+     * @return ServerResponse
+     */
+    @RequestMapping(value = "select_order_seller_id_type.do", method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<PageInfo> selectOrderBySellerIdAndStatus(HttpSession session
-            ,@RequestParam(value = "status",defaultValue = "0") Integer status
-            ,@RequestParam(value = "pn",defaultValue = "1") Integer pn){
-        User user = (User)session.getAttribute(Const.CURRENT_USER);
-        if(user == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
+    public ServerResponse<PageInfo> selectOrderBySellerIdAndStatus(HttpServletRequest request
+            , @RequestParam(value = "status", defaultValue = "0") Integer status
+            , @RequestParam(value = "pn", defaultValue = "1") Integer pn) {
+        String loginToken = getLoginToken(request);
+        if (StringUtils.isEmpty(loginToken)) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "请先登录");
         }
-        if(user.getRole() != 1){
+        String userJsonStr = RedisPoolUtil.get(loginToken);
+        User user = JsonUtil.stringToObject(userJsonStr, User.class);
+        if (user == null) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
+        }
+        if (user.getRole() != 1) {
             return ServerResponse.createByErrorMessage("你不是卖家的身份");
         }
-        // todo 查询除购买了该卖家商品的所有订单
         //IOrderService
         return iOrderService.selectOrderBySellerIdAndStatus(user.getId(), status, pn);
     }
 
-    @RequestMapping(value = "send_order.do",method = RequestMethod.POST)
+    /**
+     * 发货
+     *
+     * @param orderNo 订单号
+     * @param boxId   冷鲜箱
+     * @return ServerResponse
+     */
+    @RequestMapping(value = "send_order.do", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<String> sendOrder(Long orderNo,Integer boxId){
-        return iOrderService.sendOrder(orderNo,boxId);
+    public ServerResponse<String> sendOrder(Long orderNo, Integer boxId) {
+        return iOrderService.sendOrder(orderNo, boxId);
+    }
+
+    /**
+     * 获取token
+     *
+     * @param request 请求
+     * @return String
+     */
+    private String getLoginToken(HttpServletRequest request) {
+        return CookieUtil.readLoginToken(request);
     }
 
 }
