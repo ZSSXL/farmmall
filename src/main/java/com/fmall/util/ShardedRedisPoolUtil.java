@@ -114,7 +114,7 @@ public class ShardedRedisPoolUtil {
      * @param exTime 值
      * @return Long
      */
-    public static Long setEx(String key, int exTime) {
+    public static Long expire(String key, int exTime) {
         ShardedJedis jedis = null;
         Long result = null;
         try {
