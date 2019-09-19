@@ -19,25 +19,30 @@ public interface OrderMapper {
 
     int updateByPrimaryKey(Order record);
 
-    int deleteOrder(@Param("userId") Integer userId,@Param("orderNo") Long orderNo);
+    int deleteOrder(@Param("userId") Integer userId, @Param("orderNo") Long orderNo);
 
-    List<OrderItemVo> showOrdersByUserId(@Param("userId") Integer userId,@Param("status") Integer status);
+    List<OrderItemVo> showOrdersByUserId(@Param("userId") Integer userId, @Param("status") Integer status);
 
-    Order selectExist(@Param("userId") Integer userId,@Param("orderNo") Long orderNo);
+    Order selectExist(@Param("userId") Integer userId, @Param("orderNo") Long orderNo);
 
-    int updateStatusByOrderNo(@Param("status") Integer status,@Param("orderNo") Long orderNo);
+    int updateStatusByOrderNo(@Param("status") Integer status, @Param("orderNo") Long orderNo);
 
     Integer checkedShippingId(Long orderNo);
 
     int deleteOrderBySeller(Long orderNo);
 
-    int updateBoxIdAndStatusByOrderNo(@Param("orderNo")Long orderNo,@Param("boxId") Integer boxId,@Param("status") int status);
+    int updateBoxIdAndStatusByOrderNo(@Param("orderNo") Long orderNo, @Param("boxId") Integer boxId, @Param("status") int status);
 
     List<Order> queryAllOrders();
 
     List<Order> queryOrdersByOrderNo(@Param("orderNo") Long orderNo);
 
-    void deleteOrderById(@Param("orderNo")String id);
+    void deleteOrderById(@Param("orderNo") String id);
 
     Order selectByOrderNo(Long orderNo);
+
+    /*新增定时关单*/
+    List<Order> selectOrderStatusByCreateTime(@Param("status") Integer status, @Param("date") String date);
+
+    int closeOrderByOrderId(Integer id);
 }

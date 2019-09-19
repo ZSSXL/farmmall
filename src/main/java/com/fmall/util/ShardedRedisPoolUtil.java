@@ -38,6 +38,29 @@ public class ShardedRedisPoolUtil {
     }
 
     /**
+     * getset
+     *
+     * @param key   键
+     * @param value 值
+     * @return String
+     */
+    public static String getSet(String key, String value) {
+        ShardedJedis jedis = null;
+        String result = null;
+        try {
+            jedis = RedisShardedPool.getJedis();
+            result = jedis.getSet(key, value);
+        } catch (Exception e) {
+            log.error("getSet key:{} value:{} error", key, value, e);
+            assert jedis != null;
+            RedisShardedPool.returnResource(jedis);
+            return result;
+        }
+        RedisShardedPool.returnResource(jedis);
+        return result;
+    }
+
+    /**
      * 获取值
      *
      * @param key 键
@@ -121,6 +144,29 @@ public class ShardedRedisPoolUtil {
             result = jedis.del(key);
         } catch (Exception e) {
             log.error("set key:{} error", key, e);
+            assert jedis != null;
+            RedisShardedPool.returnResource(jedis);
+            return result;
+        }
+        RedisShardedPool.returnResource(jedis);
+        return result;
+    }
+
+    /**
+     * setnx
+     *
+     * @param key   键
+     * @param value 值
+     * @return String
+     */
+    public static Long setNx(String key, String value) {
+        ShardedJedis jedis = null;
+        Long result = null;
+        try {
+            jedis = RedisShardedPool.getJedis();
+            result = jedis.setnx(key, value);
+        } catch (Exception e) {
+            log.error("setnx key:{} value:{} error", key, value, e);
             assert jedis != null;
             RedisShardedPool.returnResource(jedis);
             return result;

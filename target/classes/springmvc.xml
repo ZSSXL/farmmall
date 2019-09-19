@@ -47,6 +47,15 @@
     <!-- 打开视图解析器，定义跳转的文件的前后缀 -->
     <bean id="jspViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
     		<property name="prefix" value="/jsp/"/>
-    		<property name="suffix" value=".jsp"></property>
+    		<property name="suffix" value=".jsp"/>
     </bean>
+
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <mvc:exclude-mapping path="/manage/user/login.do"/>
+            <bean class="com.fmall.common.Interceptor.AuthorityInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
 </beans>

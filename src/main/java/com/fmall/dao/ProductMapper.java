@@ -30,4 +30,6 @@ public interface ProductMapper {
 
     int updateStatusBySellerId(@Param("userId") Integer userId, @Param("status") Integer status,@Param("productId") Integer productId);
 
+    Integer selectStockByProductId(Integer id);
+
 }

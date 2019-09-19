@@ -14,6 +14,8 @@ public class DateUtil {
 
     private static final String STANARD_RORMAT_DETAIL = "HH:mm:ss";
 
+    private static final String DETAIL_FARMAT = "yyyy-MM-dd HH:mm:ss";
+
     // 获取哪一天
     private static String whichDay() {
         Date date = new Date();
@@ -30,8 +32,12 @@ public class DateUtil {
 
     public static String change(String oldDate) {
         String[] strs = oldDate.split("/");
-        String newDate = strs[0] + "-" + strs[1] + "-" + strs[2];
-        return newDate;
+        return strs[0] + "-" + strs[1] + "-" + strs[2];
+    }
+
+    public static String dateToStr(Date date){
+        DateTime dateTime = new DateTime(date);
+        return dateTime.toString(DETAIL_FARMAT);
     }
 
     public static void main(String[] args) {

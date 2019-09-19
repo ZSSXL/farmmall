@@ -165,4 +165,11 @@ public interface IOrderService {
      * @param id 订单id
      */
     void deleteOrderById(String id);
+
+    /**
+     * 对hour个小时内未付款的订单进行关闭
+     *
+     * @param hour 小时
+     */
+    void closeOrder(int hour);
 }
