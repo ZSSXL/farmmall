@@ -100,7 +100,7 @@ public class CloseOrderTask {
         RLock lock = redissonManager.getRedisson().getLock(Const.Redis.CLOSE_ORDER_TASK_LOCK);
         boolean getLock = false;
         try {
-            if (getLock = lock.tryLock(2, 5, TimeUnit.SECONDS)) {
+            if (getLock = lock.tryLock(0, 5, TimeUnit.SECONDS)) {
                 log.info("Redisson获取分布式锁: {},ThreadName: {}", Const.Redis.CLOSE_ORDER_TASK_LOCK, Thread.currentThread().getName());
                 int hour = Integer.parseInt(PropertiesUtil.getProperty("close.order.task.time.hour"));
                 orderService.closeOrder(hour);
@@ -110,6 +110,9 @@ public class CloseOrderTask {
         } catch (InterruptedException e) {
             log.error("Redisson分布式锁获取异常", e);
         } finally {
+            if (!getLock) {
+                return;
+            }
             lock.unlock();
             log.info("Redisson分布式锁释放");
         }

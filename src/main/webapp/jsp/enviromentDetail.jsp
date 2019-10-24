@@ -98,7 +98,7 @@
         var logisticList = result.data;
         $.each(logisticList, function (index, item) {
             path.push(new AMap.LngLat(item.latitude, item.longitude));
-        })
+        });
 
         var map = new AMap.Map("map", {
             resizeEnable: true,
