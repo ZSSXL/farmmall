@@ -13,6 +13,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PreDestroy;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -102,7 +103,7 @@ public class CloseOrderTask {
         try {
             if (getLock = lock.tryLock(0, 5, TimeUnit.SECONDS)) {
                 log.info("Redisson获取分布式锁: {},ThreadName: {}", Const.Redis.CLOSE_ORDER_TASK_LOCK, Thread.currentThread().getName());
-                int hour = Integer.parseInt(PropertiesUtil.getProperty("close.order.task.time.hour"));
+                int hour = Integer.parseInt(Objects.requireNonNull(PropertiesUtil.getProperty("close.order.task.time.hour")));
                 orderService.closeOrder(hour);
             } else {
                 log.info("Redisson没有获取到分布式锁：{}", Const.Redis.CLOSE_ORDER_TASK_LOCK);
@@ -122,7 +123,7 @@ public class CloseOrderTask {
         // 设置有效期为50秒，防止死锁
         ShardedRedisPoolUtil.expire(Const.Redis.CLOSE_ORDER_TASK_LOCK, 5);
         log.info("获取： {}, ThreadName: {}", Const.Redis.CLOSE_ORDER_TASK_LOCK, Thread.currentThread().getName());
-        int hour = Integer.parseInt(PropertiesUtil.getProperty("close.order.task.time.hour"));
+        int hour = Integer.parseInt(Objects.requireNonNull(PropertiesUtil.getProperty("close.order.task.time.hour")));
         orderService.closeOrder(hour);
         ShardedRedisPoolUtil.del(Const.Redis.CLOSE_ORDER_TASK_LOCK);
         log.info("释放分布式锁");
